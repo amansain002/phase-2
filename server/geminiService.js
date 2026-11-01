@@ -10,6 +10,7 @@ let client = null;
 
 function getClient() {
   const apiKey =
+    process.env.GEMINI_API_KEY_2 ||
     process.env.GEMINI_API_KEY ||
     process.env.GOOGLE_GENAI_API_KEY ||
     process.env.VITE_GEMINI_API_KEY ||
@@ -138,6 +139,7 @@ export async function generateCompanionResponse(context) {
 
 export function isGeminiConfigured() {
   const apiKey =
+    process.env.GEMINI_API_KEY_2 ||
     process.env.GEMINI_API_KEY ||
     process.env.GOOGLE_GENAI_API_KEY ||
     process.env.VITE_GEMINI_API_KEY ||
