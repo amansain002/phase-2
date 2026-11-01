@@ -68,8 +68,8 @@ export const BudgetSetupModal: React.FC<BudgetSetupModalProps> = ({
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     initialPlan?.categories
-      ? initialPlan.categories.map((c) => c.name)
-      : DEFAULT_STUDENT_CATEGORIES.map((c) => c.name)
+      ? initialPlan.categories.map((c: any) => c.name)
+      : DEFAULT_STUDENT_CATEGORIES.map((c: any) => c.name)
   );
   const [customCategoryName, setCustomCategoryName] = useState('');
 
@@ -426,7 +426,7 @@ export const BudgetSetupModal: React.FC<BudgetSetupModalProps> = ({
               </div>
 
               <div className="flex flex-wrap gap-2 max-h-[190px] overflow-y-auto pr-1 custom-scrollbar">
-                {DEFAULT_STUDENT_CATEGORIES.map((cat) => {
+                {DEFAULT_STUDENT_CATEGORIES.map((cat: any) => {
                   const isChecked = selectedCategories.includes(cat.name);
                   return (
                     <button

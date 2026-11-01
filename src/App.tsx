@@ -18,12 +18,14 @@ import { TimetableTab } from './tabs/TimetableTab';
 import { WorkoutTab } from './tabs/WorkoutTab';
 import { FriendsTab } from './tabs/FriendsTab';
 import { HomeBudgetCard } from './components/HomeBudgetCard';
-import { AddExpenseModal } from './components/AddExpenseModal';
+import { TinyAddExpenseModal } from './components/TinyAddExpenseModal';
 import {
   loadStoredBudgetPlan,
   loadStoredDetailedExpenses,
   saveStoredDetailedExpenses,
   computeBudgetMetrics,
+  canClaimExpenseXP,
+  recordExpenseXPClaim,
 } from './lib/budgetService';
 import { DetailedExpense, BudgetPlan } from './types/budget';
 import { Onboarding } from './components/Onboarding';
@@ -180,21 +182,35 @@ const MainContent: React.FC = () => {
     );
   }
 
-  const handleHomeAddExpense = (expenseData: Omit<DetailedExpense, 'id' | 'createdAt'>) => {
+  const handleHomeAddExpense = (amount: number, category: string) => {
+    const now = new Date();
     const newExp: DetailedExpense = {
-      ...expenseData,
       id: `exp-${Date.now()}`,
-      createdAt: new Date().toISOString(),
+      amount,
+      category,
+      note: category,
+      date: now.toISOString().split('T')[0],
+      time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+      paymentMethod: 'UPI',
+      createdAt: now.toISOString(),
     };
     const updated = [newExp, ...detailedExpenses];
     setDetailedExpenses(updated);
     saveStoredDetailedExpenses(updated);
 
     const m = computeBudgetMetrics(budgetPlan, updated);
-    addXp(
-      5,
-      `${expenseData.category} -${budgetPlan.currency}${expenseData.amount}. ${budgetPlan.currency}${m.remainingSpendable.toLocaleString()} left this month. Today's limit: ${budgetPlan.currency}${m.dailySpendingLimit} left.`
-    );
+    if (canClaimExpenseXP()) {
+      recordExpenseXPClaim();
+      addXp(
+        5,
+        `${category} -${budgetPlan.currency}${amount}. ${budgetPlan.currency}${m.remainingSpendable.toLocaleString()} left this month. Today's limit: ${budgetPlan.currency}${m.dailySpendingLimit} left.`
+      );
+    } else {
+      addXp(
+        0,
+        `${category} -${budgetPlan.currency}${amount}. ${budgetPlan.currency}${m.remainingSpendable.toLocaleString()} left this month. Today's limit: ${budgetPlan.currency}${m.dailySpendingLimit} left.`
+      );
+    }
   };
 
   // Render the Tab's Content
@@ -599,13 +615,13 @@ const MainContent: React.FC = () => {
         </button>
       )}
 
-      {/* Home Add Expense Modal */}
-      <AddExpenseModal
+      {/* Home Tiny Add Expense Modal */}
+      <TinyAddExpenseModal
         isOpen={isHomeAddExpenseOpen}
         onClose={() => setIsHomeAddExpenseOpen(false)}
-        onAddExpense={handleHomeAddExpense}
-        budgetPlan={budgetPlan}
-        currentExpenses={detailedExpenses}
+        onSave={handleHomeAddExpense}
+        categories={budgetPlan.categories}
+        currency={budgetPlan.currency}
       />
 
       {/* Floating Notifications & Celebrations */}
