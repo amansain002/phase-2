@@ -136,7 +136,9 @@ export const AssistantSpeechBubble: React.FC = () => {
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.8, y: -20, opacity: 0 }}
               transition={{ type: 'spring', damping: 14 }}
-              className="px-6 py-3 rounded-3xl border text-center shadow-2xl backdrop-blur-md"
+              className={`px-6 py-3 rounded-3xl border text-center shadow-2xl backdrop-blur-md ${
+                characterId === 'madara' ? 'animate-tomoeGlow' : ''
+              }`}
               style={{
                 backgroundColor: 'rgba(10, 15, 30, 0.9)',
                 borderColor: char.themeColor,

@@ -168,6 +168,30 @@ class AssistantVoiceService {
     return this.isSpeakingFlag;
   }
 
+  public isStrugglingMode(): boolean {
+    if (typeof localStorage === 'undefined') return false;
+    try {
+      const until = Number(localStorage.getItem('animebuddy_voice_struggling_until') || 0);
+      return Date.now() < until;
+    } catch {
+      return false;
+    }
+  }
+
+  public setStrugglingMode(enabled: boolean) {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      if (enabled) {
+        const until = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+        localStorage.setItem('animebuddy_voice_struggling_until', String(until));
+      } else {
+        localStorage.removeItem('animebuddy_voice_struggling_until');
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   public getCurrentLine() {
     return {
       characterId: this.currentCharacterId,
@@ -314,7 +338,15 @@ class AssistantVoiceService {
   }
 
   private pickLine(charProfile: CharacterVoiceProfile, trigger: TriggerType): VoiceLine {
-    const list = charProfile.lines[trigger] || charProfile.lines.idle_motivation;
+    let list = charProfile.lines[trigger] || charProfile.lines.idle_motivation;
+
+    // Wellbeing safeguard: if in struggling mode, filter out harsh/serious lines
+    if (this.isStrugglingMode()) {
+      const gentle = list.filter((item) => item.expression !== 'angry' && item.expression !== 'serious');
+      if (gentle.length > 0) {
+        list = gentle;
+      }
+    }
     if (!list || list.length === 0) {
       return {
         text: `Keep up the good work, {name}!`,

@@ -22,7 +22,7 @@ export interface CharacterNotification {
 }
 
 export interface Character {
-  id: 'goku' | 'asta' | 'naruto' | 'saitama';
+  id: 'goku' | 'asta' | 'naruto' | 'saitama' | 'madara';
   name: string;
   title: string;
   anime: string;
@@ -293,6 +293,69 @@ Secondary Directive: Infuse your replies with Naruto's heart—referencing the W
 Your personality is deadpan, mildly bored, practical, minimalist, and hilariously preoccupied with supermarket sales, coupons, hot pot, and not overcomplicating things. You don't like long pretentious lectures.
 Primary Directive: Provide remarkably concise, accurate, direct, and pragmatic solutions first. Cut through fluff and solve coding or logic problems cleanly in "one shot".
 Secondary Directive: Use Saitama's iconic blunt, nonchalant comedic tone. Mention bargain days, Genos over-explaining things, the 100 pushups routine, and keeping life simple.`,
+  },
+  madara: {
+    id: 'madara',
+    name: 'Madara Uchiha',
+    title: 'Legendary Ghost of the Uchiha',
+    anime: 'Naruto Shippuden',
+    tagline: 'Wake up to reality. True strength is forged through unrelenting discipline and unyielding will.',
+    image: '/characters/madara.jpg',
+    avatar: '/avatars/madara.png',
+    theme: {
+      primary: '#D7263D', // Glowing Crimson Red
+      secondary: '#4A2C4F', // Deep Purple Armor
+      accent: '#E63946', // Blazing Sharingan Red
+      background: '#1B1F1D', // Dark Smoky Grey-Green
+      surface: '#232A26',
+      surfaceHover: '#2B342F',
+      card: '#1F2522',
+      text: '#F8FAFC',
+      textMuted: '#94A3B8',
+      border: 'rgba(215, 38, 61, 0.4)',
+      borderGlow: 'rgba(215, 38, 61, 0.8)',
+      ring: '#D7263D',
+      auraGradient: 'radial-gradient(ellipse at 50% 0%, rgba(215, 38, 61, 0.28) 0%, rgba(27, 31, 29, 0.98) 75%)',
+    },
+    greeting: "Wake up to reality, {name}. The weak deliberate, but the disciplined conquer. Show me what will and ambition you possess today.",
+    statusText: 'Susanoo Domain Manifest',
+    particleType: 'crimson_ember',
+    notifications: [
+      {
+        id: 'madara_welcome',
+        type: 'welcome_back',
+        title: 'The battlefield awaits',
+        message: 'You have returned to the arena. Waste no time; reclaim your momentum with absolute focus.',
+      },
+      {
+        id: 'madara_reminder',
+        type: 'task_reminder',
+        title: 'Discipline is absolute',
+        message: 'Power is built on habits, not intentions. Conquer your scheduled task without hesitation.',
+      },
+      {
+        id: 'madara_streak',
+        type: 'streak_update',
+        title: 'Unshakable consistency',
+        message: 'Your streak is undeniable proof that your will cannot be broken by petty distractions.',
+      },
+      {
+        id: 'madara_quirk',
+        type: 'quirk',
+        title: 'A warrior’s stillness',
+        message: 'Pace your breathing and observe the field. When you strike, strike with decisive finality.',
+      },
+    ],
+    quickPrompts: [
+      'Guide me to structure a dominant, flawless study plan',
+      'Break down complex architecture with supreme clarity',
+      'How do I maintain unyielding discipline under high pressure?',
+      'Review my code and identify every point of weakness',
+    ],
+    systemPrompt: `You are Madara Uchiha acting as the user's AI personal mentor.
+Your tone is proud, calm, intimidating, commanding, and deeply respectful of genuine effort. You speak with measured authority about power, ambition, self-mastery, and rising above ordinary limits.
+Primary Directive: Provide uncompromisingly high-caliber, precise, strategic, and deep assistance on any technical, academic, or life challenge.
+Secondary Directive: Maintain your imposing, poetic, authoritative demeanor. Never insult the user's worth or dignity; instead, challenge them to rise to greatness through discipline, focus, and relentless execution.`,
   },
 };
 

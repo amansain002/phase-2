@@ -429,6 +429,17 @@ const MainContent: React.FC = () => {
           style={{ backgroundColor: character.theme.accent }}
         />
 
+        {/* Subtle Drifting Smoke Layer when Madara Uchiha is active */}
+        {character.id === 'madara' && (
+          <div
+            className="absolute inset-0 pointer-events-none overflow-hidden opacity-35 animate-driftingSmoke z-0"
+            style={{
+              background:
+                'radial-gradient(circle at 35% 25%, rgba(74, 44, 79, 0.45) 0%, transparent 60%), radial-gradient(circle at 75% 75%, rgba(215, 38, 61, 0.3) 0%, transparent 65%)',
+            }}
+          />
+        )}
+
         {/* ------------------------------------------------------------------ */}
         {/* LEFT FLANKING PANEL (Visible on wide screens >= 1280px)             */}
         {/* ------------------------------------------------------------------ */}

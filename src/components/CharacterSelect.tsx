@@ -11,6 +11,7 @@ const ICONS: Record<string, React.ReactNode> = {
   asta: <Flame className="w-4 h-4 text-red-500" />,
   naruto: <Shield className="w-4 h-4 text-amber-500" />,
   saitama: <Award className="w-4 h-4 text-yellow-400" />,
+  madara: <Sparkles className="w-4 h-4 text-rose-500" />,
 };
 
 export const CharacterSelect: React.FC = () => {
@@ -76,8 +77,8 @@ export const CharacterSelect: React.FC = () => {
           Select an anime companion to transform your workspace theme, motivation, and personalized AI coaching voice style.
         </motion.p>
 
-        {/* 4 Large Character Image Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 w-full">
+        {/* 5 Large Character Image Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-5 w-full">
           {characterList.map((char, index) => {
             return (
               <motion.div

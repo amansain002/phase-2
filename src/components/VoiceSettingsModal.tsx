@@ -11,6 +11,7 @@ import {
   Check,
   Play,
   RotateCcw,
+  Heart,
 } from 'lucide-react';
 import { assistantVoice, VoiceAssistantSettings } from '../lib/assistantVoiceService';
 import { useTheme } from '../context/ThemeProvider';
@@ -28,6 +29,7 @@ export const VoiceSettingsModal: React.FC<VoiceSettingsModalProps> = ({
   const [settings, setSettings] = useState<VoiceAssistantSettings>(assistantVoice.getSettings());
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [isPlayingTest, setIsPlayingTest] = useState(false);
+  const [isStruggling, setIsStruggling] = useState(() => assistantVoice.isStrugglingMode());
 
   useEffect(() => {
     if (isOpen) {
@@ -269,6 +271,35 @@ export const VoiceSettingsModal: React.FC<VoiceSettingsModalProps> = ({
                 </p>
               </div>
             )}
+
+            {/* Wellbeing Safeguards: I'm struggling (24h gentle mode) */}
+            <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Heart className="w-4 h-4 text-rose-400" />
+                  <span className="text-xs font-bold text-white">Gentle Mode ("I'm struggling")</span>
+                </div>
+                <button
+                  onClick={() => {
+                    const next = !isStruggling;
+                    setIsStruggling(next);
+                    assistantVoice.setStrugglingMode(next);
+                  }}
+                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                    isStruggling ? 'bg-rose-500' : 'bg-slate-700'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                      isStruggling ? 'translate-x-4' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Switches {character.name} to a warm, deeply supportive tone for 24 hours. Zero stern or demanding lines.
+              </p>
+            </div>
 
             {/* Quiet Hours */}
             <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
