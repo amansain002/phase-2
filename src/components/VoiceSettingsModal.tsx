@@ -365,7 +365,7 @@ export const VoiceSettingsModal: React.FC<VoiceSettingsModalProps> = ({
           </div>
 
           {/* Footer with Test Button & Reset */}
-          <div className="p-4 border-t border-slate-800 bg-slate-950/90 flex items-center justify-between gap-3">
+          <div className="p-4 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-between gap-2.5">
             <button
               onClick={handleResetDefaults}
               className="text-[11px] text-slate-400 hover:text-slate-200 transition flex items-center gap-1"
@@ -374,15 +374,27 @@ export const VoiceSettingsModal: React.FC<VoiceSettingsModalProps> = ({
               <span>Defaults</span>
             </button>
 
-            <button
-              onClick={handleTestVoice}
-              disabled={isPlayingTest}
-              className="px-4 py-2 rounded-xl font-bold text-xs text-white shadow-lg transition active:scale-95 flex items-center gap-1.5"
-              style={{ backgroundColor: character.theme.primary }}
-            >
-              <Play size={13} fill="currentColor" />
-              <span>{isPlayingTest ? 'Testing...' : 'Test Voice Line'}</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => assistantVoice.playCoachAudio(character.id)}
+                className="px-3 py-2 rounded-xl font-bold text-xs text-amber-300 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 transition active:scale-95 flex items-center gap-1.5 shadow-sm"
+              >
+                <Volume2 size={13} />
+                <span>Coach Voice</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleTestVoice}
+                disabled={isPlayingTest}
+                className="px-3.5 py-2 rounded-xl font-bold text-xs text-white shadow-lg transition active:scale-95 flex items-center gap-1.5"
+                style={{ backgroundColor: character.theme.primary }}
+              >
+                <Play size={13} fill="currentColor" />
+                <span>{isPlayingTest ? 'Testing...' : 'Test Line'}</span>
+              </button>
+            </div>
           </div>
 
           {/* Legal Note */}

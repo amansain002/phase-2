@@ -63,7 +63,11 @@ export const CHARACTERS_VOICE: Record<string, CharacterVoiceProfile> = {
       volume: 1.0,
       fallbackLang: 'en-US',
     },
-    customAudio: {},
+    customAudio: {
+      coach_voice: '/audio/coach_motivation.mp3',
+      character_select: '/audio/goku/character_select.mp3',
+      welcome: '/audio/goku/welcome.mp3',
+    },
     lines: {
       task_complete: [
         { text: "Awesome job, {name}! Finishing '{task}' earned you +{xp} XP! I'm getting hungry just watching your speed!", rarity: 'normal', expression: 'happy' },
@@ -309,7 +313,11 @@ export const CHARACTERS_VOICE: Record<string, CharacterVoiceProfile> = {
       volume: 1.0,
       fallbackLang: 'en-US',
     },
-    customAudio: {},
+    customAudio: {
+      coach_voice: '/audio/coach_motivation.mp3',
+      character_select: '/audio/naruto/character_select.mp3',
+      welcome: '/audio/naruto/welcome.mp3',
+    },
     lines: {
       task_complete: [
         { text: "Yeah! That's what I'm talking about, {name}! You cleared '{task}' and scored +{xp} XP! Believe it!", rarity: 'normal', expression: 'happy' },
@@ -555,7 +563,11 @@ export const CHARACTERS_VOICE: Record<string, CharacterVoiceProfile> = {
       volume: 1.0,
       fallbackLang: 'en-US',
     },
-    customAudio: {},
+    customAudio: {
+      coach_voice: '/audio/coach_motivation.mp3',
+      character_select: '/audio/asta/character_select.mp3',
+      welcome: '/audio/asta/welcome.mp3',
+    },
     lines: {
       task_complete: [
         { text: "YAAAAAA! YOU DESTROYED '{task}', {name}! +{xp} XP EARNED! MY NOT GIVING UP IS MY MAGIC!", rarity: 'normal', expression: 'happy' },
@@ -801,7 +813,11 @@ export const CHARACTERS_VOICE: Record<string, CharacterVoiceProfile> = {
       volume: 1.0,
       fallbackLang: 'en-US',
     },
-    customAudio: {},
+    customAudio: {
+      coach_voice: '/audio/coach_motivation.mp3',
+      character_select: '/audio/saitama/character_select.mp3',
+      welcome: '/audio/saitama/welcome.mp3',
+    },
     lines: {
       task_complete: [
         { text: "Oh, you finished '{task}'? Nice. +{xp} XP for you. Just like doing your daily 100 pushups.", rarity: 'normal', expression: 'happy' },
@@ -1046,7 +1062,11 @@ export const CHARACTERS_VOICE: Record<string, CharacterVoiceProfile> = {
       volume: 1.0,
       fallbackLang: 'en-GB',
     },
-    customAudio: {},
+    customAudio: {
+      coach_voice: '/audio/coach_motivation.mp3',
+      character_select: '/audio/madara/character_select.mp3',
+      welcome: '/audio/madara/welcome.mp3',
+    },
     lines: {
       task_complete: [
         { text: "Another task falls. Your strength grows, {name}. +{xp} XP added to your dominion.", rarity: 'normal', expression: 'proud' },

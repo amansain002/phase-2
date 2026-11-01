@@ -32,13 +32,12 @@ export const CharacterSwitcher: React.FC = () => {
 
   const handleSelectCharacter = (charId: string) => {
     setCharacter(charId);
-    assistantVoice.stop();
-    assistantVoice.speak(charId, 'character_select', { name: 'Hero' }, undefined);
+    assistantVoice.playCoachAudio(charId);
   };
 
   const handlePreviewVoice = (e: React.MouseEvent, charId: string) => {
     e.stopPropagation();
-    assistantVoice.preview(charId);
+    assistantVoice.playCoachAudio(charId);
   };
 
   return (

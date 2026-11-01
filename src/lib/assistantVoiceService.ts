@@ -308,8 +308,14 @@ class AssistantVoiceService {
     }
 
     // 8. Try custom audio file first if configured
-    if (selectedLine.customAudioKey && charProfile.customAudio[selectedLine.customAudioKey]) {
-      const audioUrl = charProfile.customAudio[selectedLine.customAudioKey];
+    const customKey = selectedLine.customAudioKey || trigger;
+    const audioUrl =
+      charProfile.customAudio[customKey] ||
+      (selectedLine.customAudioKey ? charProfile.customAudio[selectedLine.customAudioKey] : undefined) ||
+      charProfile.customAudio['coach_voice'] ||
+      charProfile.customAudio['welcome'];
+
+    if (audioUrl) {
       try {
         const audio = new Audio(audioUrl);
         audio.volume = this.settings.volume;
@@ -541,6 +547,25 @@ class AssistantVoiceService {
   public preview(characterId: string) {
     this.stop();
     this.speak(characterId, 'character_select', { name: 'Hero' }, undefined);
+  }
+
+  /**
+   * Play the uploaded custom anime coach voice audio directly
+   */
+  public playCoachAudio(characterId?: string): boolean {
+    const char = characterId || this.currentCharacterId || 'goku';
+    this.stop();
+    return this.speak(
+      char,
+      'character_select',
+      { name: 'Hero' },
+      {
+        text: "All right, listen up, my friend! Today is the day we start something great! But hear me well: Strength isn't about how hard you hit, it's about how many times you stand back up. I've seen what you're capable of, even if you haven't yet. So don't you dare hold back! Give me everything you've got, and let's go beyond your limits!",
+        rarity: 'legendary',
+        expression: 'proud',
+        customAudioKey: 'coach_voice',
+      }
+    );
   }
 }
 

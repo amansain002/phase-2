@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Volume2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useTheme } from '../context/ThemeProvider';
 import { CharacterAvatar } from './CharacterAvatar';
+import { assistantVoice } from '../lib/assistantVoiceService';
 
 export const CompanionWidget: React.FC = () => {
   const { openCompanionHub, isFocusChamberOpen, isCompanionHubOpen } = useApp();
@@ -37,7 +38,16 @@ export const CompanionWidget: React.FC = () => {
             "{character.tagline}"
           </p>
 
-          <div className="mt-2.5 pt-2 border-t border-slate-700/60 flex items-center justify-between">
+          <div className="mt-2.5 pt-2 border-t border-slate-700/60 flex items-center justify-between gap-1.5">
+            <button
+              onClick={() => {
+                assistantVoice.playCoachAudio(character.id);
+              }}
+              className="text-[11px] font-bold text-amber-300 hover:text-amber-200 flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-500/20 border border-amber-500/30 transition active:scale-95"
+              title="Play Coach Motivational Voice"
+            >
+              <Volume2 size={12} /> Coach Voice
+            </button>
             <button
               onClick={() => {
                 setBubbleOpen(false);
@@ -46,7 +56,7 @@ export const CompanionWidget: React.FC = () => {
               className="text-xs font-bold flex items-center gap-1 hover:underline"
               style={{ color: character.theme.primary }}
             >
-              Open AI Chat <Sparkles size={12} />
+              Chat <Sparkles size={12} />
             </button>
             <button
               onClick={() => setBubbleOpen(false)}

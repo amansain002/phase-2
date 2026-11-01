@@ -21,14 +21,13 @@ export const CharacterSelect: React.FC = () => {
   const handleSelect = (char: Character) => {
     playSound('chime');
     setCharacter(char.id);
-    assistantVoice.stop();
-    assistantVoice.speak(char.id, 'character_select', { name: 'Hero' }, undefined);
+    assistantVoice.playCoachAudio(char.id);
   };
 
   const handlePreview = (e: React.MouseEvent, charId: string) => {
     e.stopPropagation();
     playSound('chime');
-    assistantVoice.preview(charId);
+    assistantVoice.playCoachAudio(charId);
   };
 
   return (
