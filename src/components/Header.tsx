@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Flame,
-  Coins,
   Volume2,
   VolumeX,
   ChevronDown,
@@ -9,9 +8,9 @@ import {
   Trophy,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useTheme } from '../context/ThemeProvider';
 import { getXpRequiredForLevel, getRankDetails } from '../lib/rankEngine';
-import { COMPANION_PRESETS } from '../lib/storage';
-import { CompanionAvatar } from './CompanionAvatar';
+import { CharacterAvatar } from './CharacterAvatar';
 import { TabId } from './BottomNav';
 
 interface HeaderProps {
@@ -23,11 +22,10 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
     progress,
     soundEnabled,
     toggleSound,
-    setCompanion,
     openCompanionHub,
   } = useApp();
 
-  const [isCompanionPickerOpen, setIsCompanionPickerOpen] = useState(false);
+  const { character, setIsSwitcherOpen } = useTheme();
 
   const xpNeeded = getXpRequiredForLevel(progress.level);
   const xpPct = Math.min(100, Math.round((progress.currentXp / xpNeeded) * 100));
@@ -36,57 +34,30 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
   return (
     <header className="sticky top-0 z-20 border-b border-edge bg-surface/90 backdrop-blur-md px-4 py-3">
       <div className="flex items-center justify-between gap-3">
-        {/* Companion Mini Avatar with Click-to-Change */}
+        {/* AnimeBuddy Mini Avatar with Click-to-Switch Drawer */}
         <div className="flex items-center gap-2.5">
           <div className="relative">
             <button
-              onClick={() => setIsCompanionPickerOpen(!isCompanionPickerOpen)}
-              title="Switch companion"
-              className="relative p-1 rounded-2xl border border-edge2 bg-sand-subtle hover:border-saddle transition group"
+              onClick={() => setIsSwitcherOpen(true)}
+              title={`Switch assistant (Current: ${character.name})`}
+              className="relative p-0.5 rounded-full border transition-all duration-300 group hover:scale-105"
+              style={{
+                borderColor: character.theme.primary,
+                boxShadow: `0 0 10px ${character.theme.primary}40`,
+              }}
             >
-              <CompanionAvatar
-                id={progress.companion.id}
-                glow={progress.companion.glowColor}
-                size={38}
-                floating={false}
+              <CharacterAvatar
+                character={character}
+                size="xs"
+                showGlow={false}
               />
-              <span className="absolute -bottom-1 -right-1 p-0.5 rounded-full bg-surface border border-edge text-coffee-muted group-hover:text-saddle">
+              <span 
+                className="absolute -bottom-1 -right-1 p-0.5 rounded-full bg-surface border border-edge text-coffee-muted group-hover:text-saddle"
+                style={{ borderColor: character.theme.primary }}
+              >
                 <ChevronDown size={9} />
               </span>
             </button>
-
-            {/* Companion Dropdown Picker */}
-            {isCompanionPickerOpen && (
-              <div className="absolute top-12 left-0 z-50 w-60 p-2.5 rounded-2xl border border-edge2 bg-surface shadow-warm animate-scaleUp">
-                <p className="text-[10px] font-bold text-coffee-muted uppercase tracking-wider mb-2">
-                  Select Focus Companion
-                </p>
-                <div className="space-y-1">
-                  {COMPANION_PRESETS.map((c) => (
-                    <button
-                      key={c.id}
-                      onClick={() => {
-                        setCompanion(c);
-                        setIsCompanionPickerOpen(false);
-                      }}
-                      className={`w-full flex items-center gap-2 p-2 rounded-xl text-left transition ${
-                        progress.companion.id === c.id
-                          ? 'border border-saddle/40 bg-saddle/10 text-saddle'
-                          : 'hover:bg-sand/30 text-coffee'
-                      }`}
-                    >
-                      <CompanionAvatar id={c.id} glow={c.glowColor} size={26} floating={false} />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs font-bold truncate">{c.name}</p>
-                        <p className="text-[10px] text-coffee-muted truncate capitalize">
-                          {c.personality} • {c.archetype}
-                        </p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           <div>
@@ -94,8 +65,15 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
               <h1 className="text-base font-extrabold tracking-tight text-coffee font-display">
                 UpLevel
               </h1>
-              <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full border border-saddle/30 bg-saddle/10 text-saddle uppercase">
-                {progress.companion.personality}
+              <span 
+                className="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full border uppercase"
+                style={{
+                  backgroundColor: `${character.theme.primary}15`,
+                  borderColor: `${character.theme.primary}40`,
+                  color: character.theme.primary,
+                }}
+              >
+                {character.name}
               </span>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-coffee-muted mt-0.5">
@@ -132,8 +110,13 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
           {/* AI Companion Quick Trigger */}
           <button
             onClick={openCompanionHub}
-            title="Open AI Companion"
-            className="p-1.5 rounded-xl border border-edge bg-surface hover:bg-sand/30 text-saddle transition"
+            title={`Chat with ${character.name}`}
+            className="p-1.5 rounded-xl border transition"
+            style={{
+              borderColor: `${character.theme.primary}50`,
+              backgroundColor: `${character.theme.primary}15`,
+              color: character.theme.primary,
+            }}
           >
             <Bot size={14} />
           </button>
@@ -152,8 +135,11 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
       {/* Mini XP Bar directly under header */}
       <div className="mt-2.5 h-1.5 w-full bg-olive/20 rounded-full overflow-hidden border border-edge">
         <div
-          className="h-full bg-saddle rounded-full transition-all duration-500 ease-out"
-          style={{ width: `${xpPct}%` }}
+          className="h-full rounded-full transition-all duration-500 ease-out"
+          style={{ 
+            width: `${xpPct}%`,
+            backgroundColor: character.theme.primary,
+          }}
         />
       </div>
     </header>

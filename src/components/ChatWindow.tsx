@@ -15,6 +15,7 @@ import {
   Bell,
   RefreshCw,
   Zap,
+  X,
 } from 'lucide-react';
 
 export interface ChatMessage {
@@ -24,7 +25,11 @@ export interface ChatMessage {
   timestamp: number;
 }
 
-export const ChatWindow: React.FC = () => {
+export interface ChatWindowProps {
+  onClose?: () => void;
+}
+
+export const ChatWindow: React.FC<ChatWindowProps> = ({ onClose }) => {
   const {
     character,
     setIsSwitcherOpen,
@@ -295,6 +300,18 @@ export const ChatWindow: React.FC = () => {
             <RefreshCw className="w-3.5 h-3.5" />
             <span className="hidden xs:inline">Change</span> Character
           </button>
+
+          {/* Close button if rendered in modal/drawer */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="p-2 rounded-xl border border-slate-700/60 bg-slate-900/60 text-slate-300 hover:text-white hover:bg-slate-800 transition"
+              title="Close Assistant"
+              aria-label="Close Assistant"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
       </header>
 

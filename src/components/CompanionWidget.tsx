@@ -1,46 +1,56 @@
 import React, { useState } from 'react';
-import { Bot, MessageSquare, ChevronUp, Sparkles, Zap } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { CompanionAvatar } from './CompanionAvatar';
+import { useTheme } from '../context/ThemeProvider';
+import { CharacterAvatar } from './CharacterAvatar';
 
 export const CompanionWidget: React.FC = () => {
-  const { progress, openCompanionHub, isFocusChamberOpen } = useApp();
+  const { openCompanionHub, isFocusChamberOpen, isCompanionHubOpen } = useApp();
+  const { character } = useTheme();
   const [bubbleOpen, setBubbleOpen] = useState(false);
 
-  // Hide while in full-screen Zen mode
-  if (isFocusChamberOpen) return null;
+  // Hide while in full-screen Zen mode or when hub is already open
+  if (isFocusChamberOpen || isCompanionHubOpen) return null;
 
   return (
-    <div className="fixed bottom-20 right-4 z-40 flex flex-col items-end gap-2 pointer-events-auto">
-      {/* Quick Speech Bubble */}
+    <div className="fixed bottom-20 right-4 z-40 flex flex-col items-end gap-2 pointer-events-auto select-none">
+      {/* Quick In-Character Speech Bubble */}
       {bubbleOpen && (
-        <div className="animate-slideUp max-w-[230px] p-3 rounded-2xl border border-edge2 bg-surface/95 backdrop-blur-md shadow-warm text-left">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-saddle">
-              {progress.companion.name}
+        <div 
+          className="animate-slideUp max-w-[240px] p-3.5 rounded-2xl border shadow-2xl text-left backdrop-blur-xl"
+          style={{
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            borderColor: character.theme.border,
+            boxShadow: `0 8px 30px rgba(0, 0, 0, 0.6), 0 0 15px ${character.theme.primary}30`,
+          }}
+        >
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[11px] font-black uppercase tracking-wider" style={{ color: character.theme.primary }}>
+              {character.name}
             </span>
-            <span className="text-[9px] font-bold text-coffee-muted uppercase px-1 rounded bg-sand/40">
-              {progress.companion.personality}
+            <span className="text-[10px] font-bold text-slate-400 uppercase px-1.5 py-0.5 rounded bg-slate-800">
+              {character.anime}
             </span>
           </div>
 
-          <p className="text-xs text-coffee leading-snug italic">
-            "{progress.companion.voiceLine}"
+          <p className="text-xs text-slate-200 leading-snug italic line-clamp-3">
+            "{character.tagline}"
           </p>
 
-          <div className="mt-2.5 pt-2 border-t border-edge flex items-center justify-between">
+          <div className="mt-2.5 pt-2 border-t border-slate-700/60 flex items-center justify-between">
             <button
               onClick={() => {
                 setBubbleOpen(false);
                 openCompanionHub();
               }}
-              className="text-[11px] font-bold text-saddle hover:underline flex items-center gap-1"
+              className="text-xs font-bold flex items-center gap-1 hover:underline"
+              style={{ color: character.theme.primary }}
             >
-              Open AI Chat <Sparkles size={11} />
+              Open AI Chat <Sparkles size={12} />
             </button>
             <button
               onClick={() => setBubbleOpen(false)}
-              className="text-[10px] text-coffee-muted hover:text-coffee"
+              className="text-[11px] text-slate-400 hover:text-white"
             >
               Dismiss
             </button>
@@ -58,21 +68,20 @@ export const CompanionWidget: React.FC = () => {
             setBubbleOpen(true);
           }
         }}
-        title={`Chat with ${progress.companion.name}`}
-        className="relative rounded-full transition active:scale-95 group shadow-warm"
+        title={`Chat with ${character.name}`}
+        className="relative rounded-full transition-transform active:scale-95 group shadow-2xl"
       >
         <span
           className="absolute inset-0 rounded-full animate-auraPulse"
           style={{
-            boxShadow: `0 0 16px ${progress.companion.glowColor}aa`,
-            background: `${progress.companion.glowColor}25`,
+            boxShadow: `0 0 20px ${character.theme.primary}80`,
+            background: `${character.theme.primary}20`,
           }}
         />
-        <CompanionAvatar
-          id={progress.companion.id}
-          glow={progress.companion.glowColor}
-          size={56}
-          floating={true}
+        <CharacterAvatar
+          character={character}
+          size="md"
+          showGlow={true}
         />
       </button>
     </div>
