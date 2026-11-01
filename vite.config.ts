@@ -9,8 +9,8 @@ dotenv.config();
 function aiCompanionPlugin() {
   return {
     name: 'ai-companion-backend-middleware',
-    configureServer(server) {
-      server.middlewares.use((req, res, next) => {
+    configureServer(server: any) {
+      server.middlewares.use((req: any, res: any, next: any) => {
         if (req.url && req.url.startsWith('/api/companion')) {
           handleCompanionRequest(req, res);
         } else {
@@ -22,6 +22,7 @@ function aiCompanionPlugin() {
 }
 
 export default defineConfig({
+  base: process.env.NODE_ENV === 'production' ? '/phase-2/' : '/',
   plugins: [react(), aiCompanionPlugin()],
   resolve: {
     alias: {
