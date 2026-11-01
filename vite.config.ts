@@ -24,6 +24,9 @@ function aiCompanionPlugin() {
 export default defineConfig({
   base: process.env.NODE_ENV === 'production' ? '/phase-2/' : '/',
   plugins: [react(), aiCompanionPlugin()],
+  server: {
+    port: Number(process.env.PORT) || 5173,
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
