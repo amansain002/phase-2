@@ -102,6 +102,7 @@ interface AppContextType {
   toggleTimetableEntry: (id: string) => void;
   autoPlanWeek: () => void;
   resetDemo: () => void;
+  addXp: (amount: number, reason?: string) => { leveledUp: boolean; newLevel?: number; rankTier?: string };
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -711,6 +712,62 @@ export function AppProvider({ children }: { children: ReactNode }) {
       subtitle: 'Sample study records restored.',
     });
   };
+  const addXp = (amount: number, reason: string = 'Quest Completed') => {
+    if (amount <= 0) return { leveledUp: false };
+
+    let didLevelUp = false;
+    let resultingLevel = progress.level;
+    let resultingTier = '';
+
+    setProgress((prev) => {
+      let currentXp = prev.currentXp + amount;
+      let level = prev.level;
+      let leveledUp = false;
+
+      let required = getXpRequiredForLevel(level);
+      while (currentXp >= required) {
+        currentXp -= required;
+        level += 1;
+        leveledUp = true;
+        required = getXpRequiredForLevel(level);
+      }
+
+      if (leveledUp) {
+        didLevelUp = true;
+        resultingLevel = level;
+        const rank = getRankDetails(level);
+        resultingTier = rank.tier;
+        setLevelUpData({ newLevel: level, rankTier: rank.tier });
+        feedback.playLevelUp();
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
+      }
+
+      return {
+        ...prev,
+        level,
+        currentXp,
+        coins: prev.coins + Math.floor(amount / 2),
+      };
+    });
+
+    feedback.playQuestComplete();
+    addToast({
+      type: 'xp',
+      title: `+${amount} XP Earned`,
+      subtitle: reason,
+      amount,
+    });
+
+    return {
+      leveledUp: didLevelUp,
+      newLevel: didLevelUp ? resultingLevel : undefined,
+      rankTier: didLevelUp ? resultingTier : undefined,
+    };
+  };
 
   return (
     <AppContext.Provider
@@ -755,6 +812,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         toggleTimetableEntry,
         autoPlanWeek,
         resetDemo,
+        addXp,
       }}
     >
       {children}

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Home, CalendarDays, Timer, BookOpen, Wallet, Users, Bot, User, LucideIcon } from 'lucide-react';
+import { Home, CalendarDays, Timer, BookOpen, Wallet, Users, Bot, User, Dumbbell, LucideIcon } from 'lucide-react';
 import { useTheme } from '../context/ThemeProvider';
 
-export type TabId = 'home' | 'timetable' | 'companion' | 'focus' | 'learn' | 'budget' | 'friends' | 'profile';
+export type TabId = 'home' | 'timetable' | 'workout' | 'companion' | 'focus' | 'learn' | 'budget' | 'friends' | 'profile';
 
 interface NavItem {
   id: TabId;
@@ -13,6 +13,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { id: 'home', label: 'Tasks', icon: Home },
   { id: 'timetable', label: 'Timetable', icon: CalendarDays },
+  { id: 'workout', label: 'Workout', icon: Dumbbell },
   { id: 'companion', label: 'Assistant', icon: Bot },
   { id: 'budget', label: 'Budget', icon: Wallet },
   { id: 'friends', label: 'Circle', icon: Users },

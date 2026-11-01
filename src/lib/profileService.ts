@@ -128,6 +128,11 @@ export function restartApp(preserveCharacter: boolean = true): boolean {
     localStorage.removeItem('uplevel_last_workout_claim');
     localStorage.removeItem('uplevel_daily_reset_timestamp');
     localStorage.removeItem('uplevel_companion_memory');
+    localStorage.removeItem('uplevel_workout_plans');
+    localStorage.removeItem('uplevel_workout_logs');
+    localStorage.removeItem('uplevel_workout_xp_claims');
+    localStorage.removeItem('uplevel_workout_daily_stats');
+    localStorage.removeItem('uplevel_workout_last_active_date');
 
     // Clear AnimeBuddy chat histories across all characters
     const animeCharIds = ['goku', 'asta', 'naruto', 'saitama'];

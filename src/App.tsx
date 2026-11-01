@@ -13,6 +13,7 @@ import { ProfileTab } from './tabs/ProfileTab';
 import { LearnTab } from './tabs/LearnTab';
 import { BudgetTab } from './tabs/BudgetTab';
 import { TimetableTab } from './tabs/TimetableTab';
+import { WorkoutTab } from './tabs/WorkoutTab';
 import { FriendsTab } from './tabs/FriendsTab';
 import { Onboarding } from './components/Onboarding';
 import { ChatWindow } from './components/ChatWindow';
