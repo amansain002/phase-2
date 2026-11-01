@@ -15,6 +15,7 @@ import {
   LucideIcon,
   BookOpen,
   Zap,
+  FileDown,
 } from 'lucide-react';
 import { TabId } from './BottomNav';
 import { useTheme } from '../context/ThemeProvider';
@@ -246,6 +247,24 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
             Switch
           </span>
         </div>
+
+        {/* Ideathon Proposal Download Link */}
+        <a
+          href="/UpLevel_Ideathon_Proposal.pdf"
+          download="UpLevel_Ideathon_Proposal.pdf"
+          target="_blank"
+          rel="noreferrer"
+          className="w-full py-2.5 px-3 rounded-2xl bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-indigo-600/20 hover:from-indigo-600/30 hover:to-purple-600/30 border border-indigo-500/40 text-indigo-300 font-extrabold text-xs transition flex items-center justify-between group active:scale-98 shadow-sm"
+          title="Download the official 6-page Ideathon pitch whitepaper"
+        >
+          <div className="flex items-center gap-2">
+            <FileDown size={14} className="text-indigo-400 group-hover:animate-bounce" />
+            <span>Ideathon Pitch PDF</span>
+          </div>
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-200">
+            6 Pages
+          </span>
+        </a>
       </div>
     </aside>
   );

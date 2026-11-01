@@ -9,6 +9,7 @@ import {
   User,
   Monitor,
   Smartphone,
+  FileDown,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useTheme } from '../context/ThemeProvider';
@@ -121,6 +122,19 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </button>
           )}
+
+          {/* Pitch PDF Download Button */}
+          <a
+            href="/UpLevel_Ideathon_Proposal.pdf"
+            download="UpLevel_Ideathon_Proposal.pdf"
+            target="_blank"
+            rel="noreferrer"
+            title="Download Ideathon Pitch PDF Document (6 Pages)"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-xl border border-indigo-500/40 bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 text-xs font-extrabold transition shadow-sm active:scale-95"
+          >
+            <FileDown size={13} className="text-indigo-400" />
+            <span className="hidden sm:inline">Pitch PDF</span>
+          </a>
 
           {/* Streak */}
           <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl border border-edge2 bg-sand/40 text-saddle text-xs font-extrabold">
