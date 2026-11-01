@@ -1,7 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { buildSystemInstruction, buildContextPrompt } from './prompts.js';
 
-const CANDIDATE_MODELS = ['gemini-flash-latest', 'gemini-3.8-flash', 'gemini-2.5-flash-lite'];
+const CANDIDATE_MODELS = ['gemini-3.5-flash-lite', 'gemini-flash-latest', 'gemini-3.8-flash'];
 
 let client = null;
 

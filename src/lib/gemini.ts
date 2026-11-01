@@ -8,18 +8,34 @@ interface Message {
 
 // Check for Vite frontend env or standard process env
 const importMeta = import.meta as unknown as { env?: Record<string, string> };
-const API_KEY =
-  (importMeta && importMeta.env && importMeta.env.VITE_GEMINI_API_KEY) ||
-  (typeof process !== 'undefined' && process.env && (process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY)) ||
-  '';
+
+function getApiKey(): string {
+  const viteKey = importMeta?.env?.VITE_GEMINI_API_KEY;
+  if (viteKey && viteKey !== 'your_gemini_api_key_here' && viteKey.trim() !== '') {
+    return viteKey.trim();
+  }
+  const procKey =
+    typeof process !== 'undefined'
+      ? process.env?.VITE_GEMINI_API_KEY || process.env?.GEMINI_API_KEY || process.env?.GOOGLE_GENAI_API_KEY
+      : undefined;
+  if (procKey && procKey !== 'your_gemini_api_key_here' && procKey.trim() !== '') {
+    return procKey.trim();
+  }
+  return '';
+}
 
 let client: GoogleGenAI | null = null;
-if (API_KEY && API_KEY !== 'your_gemini_api_key_here' && API_KEY.trim() !== '') {
-  try {
-    client = new GoogleGenAI({ apiKey: API_KEY });
-  } catch (err) {
-    console.warn('Failed to initialize GoogleGenAI client:', err);
+function getGeminiClient(): GoogleGenAI | null {
+  if (client) return client;
+  const key = getApiKey();
+  if (key) {
+    try {
+      client = new GoogleGenAI({ apiKey: key });
+    } catch (err) {
+      console.warn('Failed to initialize GoogleGenAI client:', err);
+    }
   }
+  return client;
 }
 
 /**
@@ -220,7 +236,8 @@ export async function generateAssistantReply(
   chatHistory: Message[] = []
 ): Promise<string> {
   // Try Live Gemini API if available
-  if (client) {
+  const activeClient = getGeminiClient();
+  if (activeClient) {
     try {
       const systemInstruction = character.systemPrompt;
       const historySummary = chatHistory
@@ -230,8 +247,8 @@ export async function generateAssistantReply(
 
       const fullPrompt = `${systemInstruction}\n\nRecent Context:\n${historySummary}\n\nUser: ${prompt}\n${character.name}:`;
 
-      const response = await client.models.generateContent({
-        model: 'gemini-2.5-flash-lite',
+      const response = await activeClient.models.generateContent({
+        model: 'gemini-3.5-flash-lite',
         contents: fullPrompt,
       });
 
