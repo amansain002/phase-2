@@ -2,8 +2,9 @@ import React from 'react';
 import { CHARACTERS, Character } from '../data/characters';
 import { useTheme } from '../context/ThemeProvider';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight, Shield, Zap, Flame, Award } from 'lucide-react';
+import { Sparkles, ArrowRight, Shield, Zap, Flame, Award, Volume2 } from 'lucide-react';
 import { CharacterAvatar } from './CharacterAvatar';
+import { assistantVoice } from '../lib/assistantVoiceService';
 
 const ICONS: Record<string, React.ReactNode> = {
   goku: <Zap className="w-4 h-4 text-sky-400" />,
@@ -19,6 +20,14 @@ export const CharacterSelect: React.FC = () => {
   const handleSelect = (char: Character) => {
     playSound('chime');
     setCharacter(char.id);
+    assistantVoice.stop();
+    assistantVoice.speak(char.id, 'character_select', { name: 'Hero' }, undefined);
+  };
+
+  const handlePreview = (e: React.MouseEvent, charId: string) => {
+    e.stopPropagation();
+    playSound('chime');
+    assistantVoice.preview(charId);
   };
 
   return (
@@ -64,7 +73,7 @@ export const CharacterSelect: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-sm sm:text-base text-slate-400 text-center max-w-xl mb-8 sm:mb-12 font-normal"
         >
-          Select an anime companion to transform your workspace theme, motivation, and personalized AI coaching style.
+          Select an anime companion to transform your workspace theme, motivation, and personalized AI coaching voice style.
         </motion.p>
 
         {/* 4 Large Character Image Cards */}
@@ -107,6 +116,17 @@ export const CharacterSelect: React.FC = () => {
                   {ICONS[char.id]}
                   <span>{char.anime}</span>
                 </div>
+
+                {/* Top Right Preview Voice Button */}
+                <button
+                  type="button"
+                  onClick={(e) => handlePreview(e, char.id)}
+                  title={`Preview ${char.name}'s voice`}
+                  className="absolute top-3.5 right-3.5 z-20 flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-slate-200 shadow-md transition active:scale-95"
+                >
+                  <Volume2 className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Preview</span>
+                </button>
 
                 {/* Bottom Content Area */}
                 <div className="absolute bottom-0 inset-x-0 p-5 flex flex-col justify-end">

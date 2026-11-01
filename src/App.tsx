@@ -33,6 +33,8 @@ import { ChatWindow } from './components/ChatWindow';
 import { CharacterSwitcher } from './components/CharacterSwitcher';
 import { CharacterAvatar } from './components/CharacterAvatar';
 import { NotificationContainer } from './components/Notification';
+import { AssistantSpeechBubble } from './components/AssistantSpeechBubble';
+import { assistantVoice } from './lib/assistantVoiceService';
 import { LoginScreen } from './components/LoginScreen';
 import { getIsLoggedIn } from './lib/profileService';
 import {
@@ -628,6 +630,7 @@ const MainContent: React.FC = () => {
       <NotificationContainer />
       <ToastContainer />
       <LevelUpModal />
+      <AssistantSpeechBubble />
     </div>
   );
 };

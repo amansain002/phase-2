@@ -3,7 +3,8 @@ import { CHARACTERS } from '../data/characters';
 import { useTheme } from '../context/ThemeProvider';
 import { CharacterAvatar } from './CharacterAvatar';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Sparkles, RefreshCw, Volume2, VolumeX, Bell } from 'lucide-react';
+import { X, Check, RefreshCw, Volume2, VolumeX, Bell } from 'lucide-react';
+import { assistantVoice } from '../lib/assistantVoiceService';
 
 export const CharacterSwitcher: React.FC = () => {
   const {
@@ -13,8 +14,6 @@ export const CharacterSwitcher: React.FC = () => {
     setIsSwitcherOpen,
     soundEnabled,
     setSoundEnabled,
-    requestNotificationPermission,
-    browserNotificationPermission,
     sendNotification,
   } = useTheme();
 
@@ -30,6 +29,17 @@ export const CharacterSwitcher: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSwitcherOpen, setIsSwitcherOpen]);
+
+  const handleSelectCharacter = (charId: string) => {
+    setCharacter(charId);
+    assistantVoice.stop();
+    assistantVoice.speak(charId, 'character_select', { name: 'Hero' }, undefined);
+  };
+
+  const handlePreviewVoice = (e: React.MouseEvent, charId: string) => {
+    e.stopPropagation();
+    assistantVoice.preview(charId);
+  };
 
   return (
     <AnimatePresence>
@@ -67,7 +77,7 @@ export const CharacterSwitcher: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-bold text-base text-white">Switch Assistant</h3>
-                  <p className="text-xs text-slate-400">Themes & memory sync automatically</p>
+                  <p className="text-xs text-slate-400">Themes & voice assistant sync instantly</p>
                 </div>
               </div>
 
@@ -90,7 +100,7 @@ export const CharacterSwitcher: React.FC = () => {
                     key={char.id}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
-                    onClick={() => setCharacter(char.id)}
+                    onClick={() => handleSelectCharacter(char.id)}
                     className={`relative p-3.5 rounded-2xl cursor-pointer border transition-all duration-300 flex items-center gap-3.5 overflow-hidden ${
                       isActive
                         ? 'bg-slate-800/90 shadow-lg'
@@ -118,17 +128,28 @@ export const CharacterSwitcher: React.FC = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1 mb-0.5">
                         <h4 className="font-bold text-sm text-white truncate">{char.name}</h4>
-                        {isActive && (
-                          <span
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                            style={{
-                              backgroundColor: `${char.theme.primary}20`,
-                              color: char.theme.primary,
-                            }}
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={(e) => handlePreviewVoice(e, char.id)}
+                            title={`Preview ${char.name}'s voice`}
+                            className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-700/80 hover:bg-slate-700 text-sky-400 border border-slate-600 flex items-center gap-1 active:scale-95"
                           >
-                            <Check className="w-3 h-3" /> Active
-                          </span>
-                        )}
+                            <Volume2 size={11} />
+                            <span>Voice</span>
+                          </button>
+                          {isActive && (
+                            <span
+                              className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                              style={{
+                                backgroundColor: `${char.theme.primary}20`,
+                                color: char.theme.primary,
+                              }}
+                            >
+                              <Check className="w-3 h-3" /> Active
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                       <p className="text-xs font-medium text-slate-400 truncate mb-1">

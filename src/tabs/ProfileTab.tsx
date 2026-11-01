@@ -16,7 +16,11 @@ import {
   Sparkles,
   Sliders,
   RefreshCw,
+  Volume2,
+  History,
 } from 'lucide-react';
+import { VoiceSettingsModal } from '../components/VoiceSettingsModal';
+import { AssistantHistoryModal } from '../components/AssistantHistoryModal';
 
 interface ProfileTabProps {
   onLogout?: () => void;
@@ -44,6 +48,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart, onR
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showRestartModal, setShowRestartModal] = useState(false);
   const [showEditAnswersModal, setShowEditAnswersModal] = useState(false);
+  const [showVoiceSettingsModal, setShowVoiceSettingsModal] = useState(false);
+  const [showVoiceHistoryModal, setShowVoiceHistoryModal] = useState(false);
   const [restartInput, setRestartInput] = useState('');
   const [isHolding, setIsHolding] = useState(false);
   const [holdProgress, setHoldProgress] = useState(0);
@@ -214,6 +220,37 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart, onR
         </button>
       </div>
 
+      {/* VOICE ASSISTANT SETTINGS & MESSAGE LOG */}
+      <div className="w-full grid grid-cols-2 gap-2.5 z-10">
+        <button
+          onClick={() => {
+            playSound('chime');
+            setShowVoiceSettingsModal(true);
+          }}
+          className="py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-900/90 hover:bg-slate-800 text-slate-200 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm"
+        >
+          <Volume2 className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Voice Settings</span>
+        </button>
+
+        <button
+          onClick={() => {
+            playSound('chime');
+            setShowVoiceHistoryModal(true);
+          }}
+          className="py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-900/90 hover:bg-slate-800 text-slate-200 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm"
+        >
+          <History className="w-3.5 h-3.5 text-indigo-400" />
+          <span>Assistant Log</span>
+        </button>
+      </div>
+
+      <div className="text-center z-10">
+        <p className="text-[10px] text-slate-500">
+          Characters are fan-inspired. Voice is synthesized.
+        </p>
+      </div>
+
       {/* 
         TWO SEPARATE BUTTONS (at the bottom, clearly separated, different colors)
         1. LOGOUT button (Signs out, retains all progress)
@@ -254,6 +291,16 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart, onR
         onSaved={() => {
           // Profile answers updated
         }}
+      />
+
+      {/* Voice Assistant Modals */}
+      <VoiceSettingsModal
+        isOpen={showVoiceSettingsModal}
+        onClose={() => setShowVoiceSettingsModal(false)}
+      />
+      <AssistantHistoryModal
+        isOpen={showVoiceHistoryModal}
+        onClose={() => setShowVoiceHistoryModal(false)}
       />
 
       {/* ------------------------------------------------------------- */}

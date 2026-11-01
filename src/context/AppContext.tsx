@@ -49,6 +49,21 @@ import { feedback } from '../lib/sound';
 import { companionSpeech } from '../lib/companionSpeech';
 import { buildLiveStudentContext, fetchAICompanionResponse } from '../lib/aiCompanionService';
 import { loadCompanionMemory, saveCompanionMemory } from '../lib/companionMemory';
+import { assistantVoice } from '../lib/assistantVoiceService';
+import { getUserAccount } from '../lib/profileService';
+
+const getActiveCharacterId = (): string => {
+  if (typeof localStorage === 'undefined') return 'goku';
+  return localStorage.getItem('animebuddy_selected_character') || 'goku';
+};
+
+const getActiveUsername = (): string => {
+  try {
+    const acc = getUserAccount();
+    if (acc && acc.username) return acc.username;
+  } catch {}
+  return 'Hero';
+};
 
 export interface CompletedSessionSummary {
   sessionId: string;
@@ -210,6 +225,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const openFocusChamber = () => {
     setIsFocusChamberOpen(true);
+    const charId = getActiveCharacterId();
+    const uName = getActiveUsername();
+    assistantVoice.speak(charId, 'focus_start', { name: uName });
   };
 
   const closeFocusChamber = () => {
@@ -356,6 +374,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
 
     setActiveSessionSummary(summary);
+    const charId = getActiveCharacterId();
+    const uName = getActiveUsername();
+    assistantVoice.speak(charId, 'focus_end', {
+      name: uName,
+      xp: xpEarned,
+      level: leveledUp ? newLevel : progress.level,
+      streak: progress.streak,
+    });
     return summary;
   };
 
@@ -400,6 +426,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
             spread: 70,
             origin: { y: 0.6 },
           });
+
+          const charId = getActiveCharacterId();
+          const uName = getActiveUsername();
+          setTimeout(() => {
+            assistantVoice.speak(charId, 'level_up', {
+              name: uName,
+              level,
+              rank: rank.tier,
+              priority: 'critical',
+            });
+          }, 450);
         }
 
         return {
@@ -441,8 +478,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
             emotion: res.emotion,
           },
         ]);
-        // Voice feature on completing task removed per user request
         companionSpeech.stop();
+        const charId = getActiveCharacterId();
+        const uName = getActiveUsername();
+        const rk = getRankDetails(progress.level);
+
+        const speechCtx = {
+          name: uName,
+          task: task.title,
+          xp: xpChange,
+          streak: progress.streak,
+          level: progress.level,
+          rank: rk.tier,
+        };
+
+        if (task.difficulty === 'hard') {
+          assistantVoice.speak(charId, 'hard_task_complete', speechCtx);
+        } else {
+          assistantVoice.speak(charId, 'task_complete', speechCtx);
+        }
       });
     } else {
       setProgress((prev) => ({
@@ -450,6 +504,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
         currentXp: Math.max(0, prev.currentXp - xpChange),
         coins: Math.max(0, prev.coins - Math.floor(xpChange / 2)),
       }));
+
+      const charId = getActiveCharacterId();
+      const uName = getActiveUsername();
+      const rk = getRankDetails(progress.level);
+
+      assistantVoice.speak(charId, 'task_skipped', {
+        name: uName,
+        task: task.title,
+        xp: xpChange,
+        streak: progress.streak,
+        level: progress.level,
+        rank: rk.tier,
+      });
     }
   };
 
