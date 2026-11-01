@@ -12,6 +12,7 @@ import { BottomNav, TabId } from './components/BottomNav';
 import { DesktopSidebar } from './components/DesktopSidebar';
 import { ProfileTab } from './tabs/ProfileTab';
 import { LearnTab } from './tabs/LearnTab';
+import { PracticeTab } from './tabs/PracticeTab';
 import { BudgetTab } from './tabs/BudgetTab';
 import { TimetableTab } from './tabs/TimetableTab';
 import { WorkoutTab } from './tabs/WorkoutTab';
@@ -42,6 +43,7 @@ import { getRankDetails, getXpRequiredForLevel } from './lib/rankEngine';
 
 const MainContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabId>('home');
+  const [selectedLearnTopic, setSelectedLearnTopic] = useState<string>('Operating Systems');
   const [isLoggedIn, setIsLoggedIn] = useState(getIsLoggedIn);
   const [isOnboardingDone, setIsOnboardingDone] = useState(() => {
     try {
@@ -105,24 +107,30 @@ const MainContent: React.FC = () => {
           setActiveTab('home');
           break;
         case '2':
-          setActiveTab('timetable');
+          setActiveTab('learn');
           break;
         case '3':
-          setActiveTab('workout');
+          setActiveTab('practice');
           break;
         case '4':
-          setActiveTab('companion');
+          setActiveTab('timetable');
           break;
         case '5':
-          setActiveTab('focus');
+          setActiveTab('workout');
           break;
         case '6':
-          setActiveTab('budget');
+          setActiveTab('companion');
           break;
         case '7':
-          setActiveTab('friends');
+          setActiveTab('focus');
           break;
         case '8':
+          setActiveTab('budget');
+          break;
+        case '9':
+          setActiveTab('friends');
+          break;
+        case '0':
           setActiveTab('profile');
           break;
         case 'Escape':
@@ -219,9 +227,20 @@ const MainContent: React.FC = () => {
           </div>
 
           {/* Daily Task List */}
-          <TaskList />
+          <TaskList
+            onLearnTopic={(topic) => {
+              setSelectedLearnTopic(topic);
+              setActiveTab('learn');
+            }}
+          />
         </div>
       )}
+
+      {/* Learn Mode Tab */}
+      {activeTab === 'learn' && <LearnTab initialTopic={selectedLearnTopic} />}
+
+      {/* Practice Hub Tab */}
+      {activeTab === 'practice' && <PracticeTab initialTopic={selectedLearnTopic} />}
 
       {/* Timetable Tab */}
       {activeTab === 'timetable' && <TimetableTab />}
@@ -279,9 +298,6 @@ const MainContent: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Learn Mode Tab */}
-      {activeTab === 'learn' && <LearnTab />}
 
       {/* Budget Tracker Tab */}
       {activeTab === 'budget' && <BudgetTab />}

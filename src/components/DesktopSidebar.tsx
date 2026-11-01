@@ -13,6 +13,8 @@ import {
   Monitor,
   ChevronRight,
   LucideIcon,
+  BookOpen,
+  Zap,
 } from 'lucide-react';
 import { TabId } from './BottomNav';
 import { useTheme } from '../context/ThemeProvider';
@@ -36,13 +38,15 @@ interface NavItem {
 
 const SIDEBAR_ITEMS: NavItem[] = [
   { id: 'home', label: 'Tasks & Goals', icon: Home, shortcut: '1' },
-  { id: 'timetable', label: 'Timetable Plan', icon: CalendarDays, shortcut: '2' },
-  { id: 'workout', label: 'Gym Workout', icon: Dumbbell, shortcut: '3' },
-  { id: 'companion', label: 'AI Anime Coach', icon: Bot, shortcut: '4' },
-  { id: 'focus', label: 'Zen Chamber', icon: Timer, shortcut: '5' },
-  { id: 'budget', label: 'Pocket Budget', icon: Wallet, shortcut: '6' },
-  { id: 'friends', label: 'Study Circle', icon: Users, shortcut: '7' },
-  { id: 'profile', label: 'Profile', icon: User, shortcut: '8' },
+  { id: 'learn', label: 'Learn Mode', icon: BookOpen, shortcut: '2' },
+  { id: 'practice', label: 'Practice Hub', icon: Zap, shortcut: '3' },
+  { id: 'timetable', label: 'Timetable Plan', icon: CalendarDays, shortcut: '4' },
+  { id: 'workout', label: 'Gym Workout', icon: Dumbbell, shortcut: '5' },
+  { id: 'companion', label: 'AI Anime Coach', icon: Bot, shortcut: '6' },
+  { id: 'focus', label: 'Zen Chamber', icon: Timer, shortcut: '7' },
+  { id: 'budget', label: 'Pocket Budget', icon: Wallet, shortcut: '8' },
+  { id: 'friends', label: 'Study Circle', icon: Users, shortcut: '9' },
+  { id: 'profile', label: 'Profile', icon: User, shortcut: '0' },
 ];
 
 export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({

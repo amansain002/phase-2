@@ -1,8 +1,29 @@
 import React from 'react';
-import { Home, CalendarDays, Timer, BookOpen, Wallet, Users, Bot, User, Dumbbell, LucideIcon } from 'lucide-react';
+import {
+  Home,
+  CalendarDays,
+  BookOpen,
+  Wallet,
+  Users,
+  Bot,
+  User,
+  Dumbbell,
+  Zap,
+  LucideIcon,
+} from 'lucide-react';
 import { useTheme } from '../context/ThemeProvider';
 
-export type TabId = 'home' | 'timetable' | 'workout' | 'companion' | 'focus' | 'learn' | 'budget' | 'friends' | 'profile';
+export type TabId =
+  | 'home'
+  | 'learn'
+  | 'practice'
+  | 'timetable'
+  | 'workout'
+  | 'companion'
+  | 'focus'
+  | 'budget'
+  | 'friends'
+  | 'profile';
 
 interface NavItem {
   id: TabId;
@@ -12,6 +33,8 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { id: 'home', label: 'Tasks', icon: Home },
+  { id: 'learn', label: 'Learn', icon: BookOpen },
+  { id: 'practice', label: 'Practice', icon: Zap },
   { id: 'timetable', label: 'Timetable', icon: CalendarDays },
   { id: 'workout', label: 'Workout', icon: Dumbbell },
   { id: 'companion', label: 'Assistant', icon: Bot },
@@ -30,13 +53,13 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab }) 
 
   return (
     <nav 
-      className="sticky bottom-0 z-30 border-t backdrop-blur-xl pb-safe transition-colors duration-500"
+      className="sticky bottom-0 z-30 border-t backdrop-blur-xl pb-safe transition-colors duration-500 shadow-lg"
       style={{
-        backgroundColor: 'rgba(15, 23, 42, 0.94)',
+        backgroundColor: 'rgba(15, 23, 42, 0.96)',
         borderColor: character.theme.border,
       }}
     >
-      <div className="flex items-stretch justify-around px-1 py-1 max-w-[440px] mx-auto">
+      <div className="flex items-stretch justify-between px-1 py-1 max-w-[500px] mx-auto overflow-x-auto no-scrollbar gap-0.5">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -45,7 +68,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab }) 
             <button
               key={item.id}
               onClick={() => onChangeTab(item.id)}
-              className="relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-xl py-1 min-h-[44px] transition active:scale-95 group min-w-0"
+              className="relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-xl py-1 min-h-[44px] min-w-[42px] transition active:scale-95 group"
             >
               <div
                 className={`p-1 rounded-xl transition ${
@@ -60,11 +83,11 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab }) 
                     : undefined
                 }
               >
-                <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
+                <Icon size={17} strokeWidth={isActive ? 2.5 : 2} />
               </div>
 
               <span
-                className={`text-[9.5px] font-semibold tracking-tight transition truncate px-0.5 ${
+                className={`text-[9px] font-semibold tracking-tight transition truncate px-0.5 ${
                   isActive ? 'font-bold' : 'text-slate-400'
                 }`}
                 style={isActive ? { color: character.theme.primary } : undefined}

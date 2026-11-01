@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Circle, Plus, Trash2, CheckSquare, Sparkles } from 'lucide-react';
+import {
+  CheckCircle2,
+  Circle,
+  Plus,
+  Trash2,
+  CheckSquare,
+  Sparkles,
+  BookOpen,
+} from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { TaskDifficulty } from '../types';
 
-export const TaskList: React.FC = () => {
+interface TaskListProps {
+  onLearnTopic?: (topic: string) => void;
+}
+
+export const TaskList: React.FC<TaskListProps> = ({ onLearnTopic }) => {
   const { tasks, toggleTask, addTask, deleteTask } = useApp();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filterSubject, setFilterSubject] = useState<string>('all');
@@ -133,8 +145,23 @@ export const TaskList: React.FC = () => {
                 </div>
               </div>
 
-              {/* Right side: XP Reward + Delete */}
-              <div className="flex items-center gap-2 shrink-0 ml-2">
+              {/* Right side: Learn Button + XP Reward + Delete */}
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                {onLearnTopic && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onLearnTopic(task.subject);
+                    }}
+                    title={`Open Learn materials for ${task.subject}`}
+                    className="px-2 py-0.5 rounded-md text-[10px] font-bold border border-edge bg-surface hover:bg-sand/30 text-coffee transition flex items-center gap-1 active:scale-95"
+                  >
+                    <BookOpen size={10} className="text-orange-500" />
+                    <span>Learn</span>
+                  </button>
+                )}
+
                 <span
                   className={`flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] font-semibold tabular-nums border ${
                     task.completed
@@ -165,64 +192,77 @@ export const TaskList: React.FC = () => {
 
       {/* Add Task Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-coffee/50 backdrop-blur-xs animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
           <div className="w-full max-w-sm p-5 rounded-2xl border border-edge bg-surface shadow-xl animate-scaleUp">
             <h3 className="text-sm font-bold text-coffee mb-1">New Study Goal</h3>
             <p className="text-[11px] text-coffee-muted mb-4">
-              Add a target to stay focused and earn XP.
+              Add a concrete assignment or learning outcome to track.
             </p>
 
             <form onSubmit={handleAddTask} className="space-y-3">
               <div>
-                <label className="block text-[11px] font-semibold text-coffee mb-1">Title</label>
+                <label className="text-[10px] font-bold text-coffee-muted block mb-1">
+                  GOAL TITLE
+                </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Complete 4 practice problems"
+                  placeholder="e.g. Master Banker's Algorithm"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-edge bg-surface2 text-xs text-coffee placeholder-coffee-muted/50 focus:outline-none focus:border-saddle"
+                  className="w-full py-2 px-3 rounded-xl border border-edge bg-surface2 text-xs text-coffee outline-none focus:border-saddle"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-coffee mb-1">Subject</label>
+                <label className="text-[10px] font-bold text-coffee-muted block mb-1">
+                  SUBJECT / TOPIC
+                </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Computer Science"
+                  placeholder="e.g. Operating Systems"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-edge bg-surface2 text-xs text-coffee placeholder-coffee-muted/50 focus:outline-none focus:border-saddle"
+                  className="w-full py-2 px-3 rounded-xl border border-edge bg-surface2 text-xs text-coffee outline-none focus:border-saddle"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-coffee mb-1">Difficulty</label>
-                <select
-                  value={difficulty}
-                  onChange={(e) => setDifficulty(e.target.value as TaskDifficulty)}
-                  className="w-full px-2.5 py-2 rounded-xl border border-edge bg-surface2 text-xs text-coffee focus:outline-none focus:border-saddle cursor-pointer"
-                >
-                  <option value="easy">Easy (+20 XP)</option>
-                  <option value="medium">Medium (+50 XP)</option>
-                  <option value="hard">Hard (+100 XP)</option>
-                </select>
+                <label className="text-[10px] font-bold text-coffee-muted block mb-1">
+                  DIFFICULTY
+                </label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {(['easy', 'medium', 'hard'] as TaskDifficulty[]).map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => setDifficulty(d)}
+                      className={`py-1.5 rounded-lg text-xs font-semibold capitalize border transition ${
+                        difficulty === d
+                          ? 'bg-saddle text-white border-saddle'
+                          : 'bg-surface2 border-edge text-coffee-muted hover:text-coffee'
+                      }`}
+                    >
+                      {d}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-3 py-1.5 rounded-xl border border-edge bg-surface2 text-xs font-medium text-coffee hover:bg-sand/30"
+                  className="flex-1 py-2 rounded-xl border border-edge text-xs font-semibold text-coffee-muted hover:text-coffee"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-xl bg-saddle hover:bg-saddle-hover text-xs font-semibold text-white shadow-sm transition"
+                  className="flex-1 py-2 rounded-xl bg-saddle hover:bg-saddle-hover text-white text-xs font-semibold shadow-xs"
                 >
-                  Create
+                  Add Goal
                 </button>
               </div>
             </form>
