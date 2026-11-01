@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, CalendarDays, Timer, BookOpen, Wallet, Users, Bot, LucideIcon } from 'lucide-react';
+import { Home, CalendarDays, Timer, BookOpen, Wallet, Users, Bot, User, LucideIcon } from 'lucide-react';
 import { useTheme } from '../context/ThemeProvider';
 
 export type TabId = 'home' | 'timetable' | 'companion' | 'focus' | 'learn' | 'budget' | 'friends' | 'profile';
@@ -16,8 +16,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'companion', label: 'Assistant', icon: Bot },
   { id: 'budget', label: 'Budget', icon: Wallet },
   { id: 'friends', label: 'Circle', icon: Users },
-  { id: 'learn', label: 'Hub', icon: BookOpen },
-  { id: 'focus', label: 'Focus', icon: Timer },
+  { id: 'profile', label: 'Profile', icon: User },
 ];
 
 interface BottomNavProps {

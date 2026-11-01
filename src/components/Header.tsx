@@ -6,6 +6,7 @@ import {
   ChevronDown,
   Bot,
   Trophy,
+  User,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useTheme } from '../context/ThemeProvider';
@@ -119,6 +120,15 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
             }}
           >
             <Bot size={14} />
+          </button>
+
+          {/* Profile Quick Button */}
+          <button
+            onClick={() => onNavigateTab && onNavigateTab('profile')}
+            title="Open Profile"
+            className="p-1.5 rounded-xl border border-edge bg-surface hover:bg-sand/30 text-saddle transition"
+          >
+            <User size={14} />
           </button>
 
           {/* Sound Toggle */}

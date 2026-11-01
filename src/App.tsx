@@ -18,6 +18,8 @@ import { Onboarding } from './components/Onboarding';
 import { ChatWindow } from './components/ChatWindow';
 import { CharacterSwitcher } from './components/CharacterSwitcher';
 import { NotificationContainer } from './components/Notification';
+import { LoginScreen } from './components/LoginScreen';
+import { getIsLoggedIn } from './lib/profileService';
 import {
   Timer,
   Sparkles,
@@ -33,6 +35,7 @@ import { getTodayDayOfWeek } from './lib/storage';
 
 const MainContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabId>('home');
+  const [isLoggedIn, setIsLoggedIn] = useState(getIsLoggedIn);
   const [isOnboardingDone, setIsOnboardingDone] = useState(() => {
     try {
       return localStorage.getItem('uplevel_phase2_onboarding_complete') === 'true';
@@ -65,6 +68,11 @@ const MainContent: React.FC = () => {
   // Budget metrics
   const totalSpent = expenses.reduce((s, e) => s + e.amount, 0);
   const remainingBudget = Math.max(0, monthlyBudget - totalSpent);
+
+  // Check authentication
+  if (!isLoggedIn) {
+    return <LoginScreen onLoginSuccess={() => setIsLoggedIn(true)} />;
+  }
 
   if (!isOnboardingDone) {
     return (
@@ -257,11 +265,17 @@ const MainContent: React.FC = () => {
         {/* Friends & Campus Leaderboard Tab */}
         {activeTab === 'friends' && <FriendsTab />}
 
-        {/* Profile Tab */}
+        {/* Minimal Profile Tab */}
         {activeTab === 'profile' && (
           <ProfileTab
-            onNavigateTab={setActiveTab}
-            onRetakeOnboarding={() => setIsOnboardingDone(false)}
+            onLogout={() => {
+              setIsLoggedIn(false);
+            }}
+            onRestart={() => {
+              setIsOnboardingDone(false);
+              setActiveTab('home');
+              window.location.reload();
+            }}
           />
         )}
       </main>
