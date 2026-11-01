@@ -1,17 +1,25 @@
 import { GoogleGenAI } from '@google/genai';
 import { buildSystemInstruction, buildContextPrompt } from './prompts.js';
 
+// Primary Integrated Gemini API Key
+export const INTEGRATED_GEMINI_API_KEY = 'AQ.Ab8RN6I2cxtj76dLz7raA91sFfpC6creA6X5SyZonDyEjG0dLQ';
+
 const CANDIDATE_MODELS = ['gemini-3.5-flash-lite', 'gemini-flash-latest', 'gemini-3.8-flash'];
 
 let client = null;
 
 function getClient() {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
+  const apiKey =
+    process.env.GEMINI_API_KEY ||
+    process.env.GOOGLE_GENAI_API_KEY ||
+    process.env.VITE_GEMINI_API_KEY ||
+    INTEGRATED_GEMINI_API_KEY;
+
   if (!apiKey || apiKey.trim() === '' || apiKey === 'your_gemini_api_key_here') {
     return null;
   }
   if (!client) {
-    client = new GoogleGenAI({ apiKey });
+    client = new GoogleGenAI({ apiKey: apiKey.trim() });
   }
   return client;
 }
@@ -129,6 +137,10 @@ export async function generateCompanionResponse(context) {
 }
 
 export function isGeminiConfigured() {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
+  const apiKey =
+    process.env.GEMINI_API_KEY ||
+    process.env.GOOGLE_GENAI_API_KEY ||
+    process.env.VITE_GEMINI_API_KEY ||
+    INTEGRATED_GEMINI_API_KEY;
   return Boolean(apiKey && apiKey.trim() !== '' && apiKey !== 'your_gemini_api_key_here');
 }

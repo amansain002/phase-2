@@ -223,10 +223,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ onClose }) => {
           </div>
 
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2">
                 {character.name}
               </h2>
+              <span className="inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Gemini 3.5
+              </span>
               <span
                 className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full"
                 style={{

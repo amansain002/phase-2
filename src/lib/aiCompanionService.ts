@@ -1,4 +1,5 @@
 import { AICompanionResponse, ChatMessage, UserProgress, Task } from '../types';
+import { getGeminiClient } from './gemini';
 
 export interface ContextPayload {
   student: {
@@ -33,15 +34,13 @@ export interface ContextPayload {
 export function buildLiveStudentContext(
   progress: UserProgress,
   rankTier: string,
-  recentTask?: Task,
+  taskJustCompleted?: string,
   sessionDuration?: number,
-  sessionSubject?: string,
-  trigger: string = 'companion_opened',
+  subject?: string,
+  trigger: string = 'task_completed',
   userMessage?: string,
-  conversationHistory?: ChatMessage[]
+  conversationHistory: ChatMessage[] = []
 ): ContextPayload {
-  const subject = sessionSubject || recentTask?.subject || 'Academics';
-
   return {
     student: {
       displayName: 'Student',
@@ -56,7 +55,7 @@ export function buildLiveStudentContext(
       personality: progress.companion.personality,
     },
     recentActivity: {
-      taskJustCompleted: recentTask?.title,
+      taskJustCompleted,
       subject,
       sessionDuration,
     },
@@ -64,7 +63,7 @@ export function buildLiveStudentContext(
       streakDays: progress.streak,
       totalCompletedSessions: 0,
     },
-    conversationHistory: conversationHistory?.slice(-6).map((m) => ({
+    conversationHistory: conversationHistory.slice(-6).map((m) => ({
       role: m.role,
       content: m.content,
     })),
@@ -93,9 +92,47 @@ export async function fetchAICompanionResponse(
     const data: AICompanionResponse = await res.json();
     return data;
   } catch (error) {
-    console.warn('[AI Companion Client] Network request failed, generating client fallback:', error);
+    console.warn('[AI Companion Client] Network request failed, attempting direct Gemini API call:', error);
 
-    // Reliable client-side safety fallback if backend server isn't running
+    // Direct client-side Gemini call using integrated API key
+    const client = getGeminiClient();
+    if (client) {
+      try {
+        const subject =
+          context.recentActivity?.subject ||
+          context.recentActivity?.taskJustCompleted ||
+          'your study session';
+        const personality = context.companion?.personality || 'hype';
+        const companionName = context.companion?.name || 'Anime Coach';
+        const prompt = `You are ${companionName}, an anime study coach with a ${personality} personality.
+The student just triggered: "${context.trigger}".
+Recent activity: ${subject}.
+Write a short, powerful 1-2 sentence reaction in-character that inspires them to keep going!`;
+
+        const res = await client.models.generateContent({
+          model: 'gemini-3.5-flash-lite',
+          contents: prompt,
+        });
+
+        if (res && res.text) {
+          return {
+            message: res.text.trim(),
+            emotion: 'celebrating',
+            suggestedAction: {
+              label: `Continue ${subject}`,
+              type: 'study_recommendation',
+            },
+            shouldSpeak: true,
+            model: 'gemini-3.5-flash-lite',
+            isFallback: false,
+          };
+        }
+      } catch (geminiErr) {
+        console.warn('[AI Companion Direct Gemini fallback failed]:', geminiErr);
+      }
+    }
+
+    // Reliable client-side safety fallback if API is unreachable
     const subject = context.recentActivity?.subject || 'your studies';
     const personality = context.companion?.personality || 'hype';
 
@@ -128,13 +165,13 @@ export async function checkGeminiStatus(): Promise<{
 }> {
   try {
     const res = await fetch('/api/companion/status');
-    if (!res.ok) return { configured: false, model: 'offline' };
-    const data = await res.json();
-    return {
-      configured: Boolean(data.geminiConfigured),
-      model: data.model || 'gemini-2.5-flash',
-    };
-  } catch {
-    return { configured: false, model: 'offline' };
-  }
+    if (res.ok) {
+      const data = await res.json();
+      return {
+        configured: Boolean(data.geminiConfigured),
+        model: data.model || 'gemini-3.5-flash-lite',
+      };
+    }
+  } catch {}
+  return { configured: true, model: 'gemini-3.5-flash-lite' };
 }

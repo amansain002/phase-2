@@ -18,7 +18,7 @@ export async function handleCompanionRequest(req, res) {
       JSON.stringify({
         status: 'ok',
         geminiConfigured: isGeminiConfigured(),
-        model: 'gemini-flash-latest',
+        model: 'gemini-3.5-flash-lite',
         serverTime: new Date().toISOString(),
       })
     );

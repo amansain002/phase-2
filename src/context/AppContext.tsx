@@ -422,7 +422,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const context = buildLiveStudentContext(
         progress,
         rank.tier,
-        task,
+        task.title,
         undefined,
         task.subject,
         'task_completed',

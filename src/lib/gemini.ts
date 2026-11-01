@@ -6,6 +6,9 @@ interface Message {
   content: string;
 }
 
+// Primary Integrated Gemini API Key
+export const INTEGRATED_GEMINI_API_KEY = 'AQ.Ab8RN6I2cxtj76dLz7raA91sFfpC6creA6X5SyZonDyEjG0dLQ';
+
 // Check for Vite frontend env or standard process env
 const importMeta = import.meta as unknown as { env?: Record<string, string> };
 
@@ -21,11 +24,12 @@ function getApiKey(): string {
   if (procKey && procKey !== 'your_gemini_api_key_here' && procKey.trim() !== '') {
     return procKey.trim();
   }
-  return '';
+  // User integrated Gemini API Key directly
+  return INTEGRATED_GEMINI_API_KEY;
 }
 
 let client: GoogleGenAI | null = null;
-function getGeminiClient(): GoogleGenAI | null {
+export function getGeminiClient(): GoogleGenAI | null {
   if (client) return client;
   const key = getApiKey();
   if (key) {
@@ -36,6 +40,11 @@ function getGeminiClient(): GoogleGenAI | null {
     }
   }
   return client;
+}
+
+export function isGeminiActive(): boolean {
+  const key = getApiKey();
+  return Boolean(key && key.trim() !== '' && key !== 'your_gemini_api_key_here');
 }
 
 /**
@@ -247,13 +256,20 @@ export async function generateAssistantReply(
 
       const fullPrompt = `${systemInstruction}\n\nRecent Context:\n${historySummary}\n\nUser: ${prompt}\n${character.name}:`;
 
-      const response = await activeClient.models.generateContent({
-        model: 'gemini-3.5-flash-lite',
-        contents: fullPrompt,
-      });
+      const modelsToTry = ['gemini-3.5-flash-lite', 'gemini-flash-latest'];
+      for (const model of modelsToTry) {
+        try {
+          const response = await activeClient.models.generateContent({
+            model,
+            contents: fullPrompt,
+          });
 
-      if (response && response.text) {
-        return response.text.trim();
+          if (response && response.text) {
+            return response.text.trim();
+          }
+        } catch (mErr) {
+          console.warn(`[Gemini - ${model}] error, trying next model:`, mErr);
+        }
       }
     } catch (err) {
       console.warn('Gemini API call failed, using intelligent local engine:', err);
