@@ -4,6 +4,7 @@ import { useTheme } from '../context/ThemeProvider';
 import { getRankDetails } from '../lib/rankEngine';
 import { CharacterAvatar } from '../components/CharacterAvatar';
 import { logout, restartApp } from '../lib/profileService';
+import { EditProfileModal } from '../components/EditProfileModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import {
@@ -12,23 +13,24 @@ import {
   LogOut,
   RotateCcw,
   AlertTriangle,
-  X,
   Sparkles,
-  CheckCircle,
+  Sliders,
+  RefreshCw,
 } from 'lucide-react';
 
 interface ProfileTabProps {
   onLogout?: () => void;
   onRestart?: () => void;
+  onRedoSetup?: () => void;
 }
 
-export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart }) => {
-  const { progress, toasts } = useApp();
+export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart, onRedoSetup }) => {
+  const { progress } = useApp();
   const { character, playSound, sendNotification } = useTheme();
 
   const rank = getRankDetails(progress.level);
 
-  // Map tier to hunter / academy letter rank if helpful
+  // Map tier to hunter / academy rank label
   const getRankLetter = (level: number) => {
     if (level >= 30) return 'Grandmaster (S+ Rank)';
     if (level >= 20) return 'Diamond (S Rank)';
@@ -38,9 +40,10 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart }) =
     return 'Bronze (D Rank)';
   };
 
-  // State for Confirm Modals
+  // State for Confirm Modals & Questionnaire Editor
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showRestartModal, setShowRestartModal] = useState(false);
+  const [showEditAnswersModal, setShowEditAnswersModal] = useState(false);
   const [restartInput, setRestartInput] = useState('');
   const [isHolding, setIsHolding] = useState(false);
   const [holdProgress, setHoldProgress] = useState(0);
@@ -124,7 +127,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart }) =
   };
 
   return (
-    <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-140px)] p-4 sm:p-6 animate-fadeIn select-none space-y-8">
+    <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-140px)] p-4 sm:p-6 animate-fadeIn select-none space-y-6">
       {/* 
         CLEAN, CENTERED CARD
         Shows ONLY:
@@ -189,12 +192,34 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart }) =
         </div>
       </motion.div>
 
+      {/* QUESTIONNAIRE MANAGEMENT: EDIT ANSWERS & REDO SETUP */}
+      <div className="w-full grid grid-cols-2 gap-2.5 z-10">
+        <button
+          onClick={() => setShowEditAnswersModal(true)}
+          className="py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-900/90 hover:bg-slate-800 text-slate-200 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm"
+        >
+          <Sliders className="w-3.5 h-3.5 text-sky-400" />
+          <span>Edit Answers</span>
+        </button>
+
+        <button
+          onClick={() => {
+            playSound('chime');
+            if (onRedoSetup) onRedoSetup();
+          }}
+          className="py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-900/90 hover:bg-slate-800 text-slate-200 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm"
+        >
+          <RefreshCw className="w-3.5 h-3.5 text-amber-400" />
+          <span>Redo Setup</span>
+        </button>
+      </div>
+
       {/* 
         TWO SEPARATE BUTTONS (at the bottom, clearly separated, different colors)
         1. LOGOUT button (Signs out, retains all progress)
         2. RESTART APP button (danger style, red, with confirmation)
       */}
-      <div className="w-full space-y-3 z-10 pt-2">
+      <div className="w-full space-y-3 z-10">
         {/* 1. LOGOUT BUTTON */}
         <button
           onClick={() => {
@@ -219,6 +244,17 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart }) =
           <span>Restart App</span>
         </button>
       </div>
+
+      {/* ------------------------------------------------------------- */}
+      {/* EDIT QUESTIONNAIRE MODAL                                       */}
+      {/* ------------------------------------------------------------- */}
+      <EditProfileModal
+        isOpen={showEditAnswersModal}
+        onClose={() => setShowEditAnswersModal(false)}
+        onSaved={() => {
+          // Profile answers updated
+        }}
+      />
 
       {/* ------------------------------------------------------------- */}
       {/* MODAL 1: SIMPLE LOGOUT CONFIRMATION DIALOG                     */}
@@ -275,7 +311,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart }) =
               exit={{ opacity: 0, scale: 0.92 }}
               className="w-full max-w-sm rounded-3xl p-6 border-2 border-red-500/80 bg-slate-950 text-white shadow-2xl space-y-5 text-center relative overflow-hidden"
             >
-              {/* Top Accent Warning Bar */}
               <div className="absolute top-0 left-0 right-0 h-1 bg-red-500" />
 
               <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/40 text-red-500 mx-auto flex items-center justify-center">
@@ -292,7 +327,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart }) =
                 </p>
               </div>
 
-              {/* Option A: Type RESTART */}
               <div className="space-y-1.5 text-left">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                   Type <span className="text-red-400 font-mono">RESTART</span> to confirm:
@@ -306,9 +340,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart }) =
                 />
               </div>
 
-              {/* Action Buttons */}
               <div className="space-y-2 pt-1">
-                {/* Typed Confirmation Button */}
                 <button
                   disabled={restartInput.trim() !== 'RESTART'}
                   onClick={handleConfirmRestart}
@@ -317,7 +349,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart }) =
                   Permanently Restart App
                 </button>
 
-                {/* Option B: Hold for 3 Seconds Alternative */}
                 <div className="relative pt-1">
                   <button
                     onMouseDown={startHold}
@@ -327,7 +358,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ onLogout, onRestart }) =
                     onTouchEnd={cancelHold}
                     className="w-full py-2.5 px-4 rounded-xl font-bold text-xs text-slate-300 border border-slate-700 bg-slate-900 hover:bg-slate-800 transition relative overflow-hidden select-none"
                   >
-                    {/* Animated Hold Fill Bar */}
                     <div
                       className="absolute inset-0 bg-red-600/50 transition-all pointer-events-none"
                       style={{ width: `${holdProgress}%` }}

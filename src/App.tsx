@@ -276,6 +276,9 @@ const MainContent: React.FC = () => {
               setActiveTab('home');
               window.location.reload();
             }}
+            onRedoSetup={() => {
+              setIsOnboardingDone(false);
+            }}
           />
         )}
       </main>
