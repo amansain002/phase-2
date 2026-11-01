@@ -441,9 +441,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             emotion: res.emotion,
           },
         ]);
-        if (progress.companion.autoSpeak && res.shouldSpeak) {
-          companionSpeech.speak(res.message, progress.companion.personality, true);
-        }
+        // Voice feature on completing task removed per user request
+        companionSpeech.stop();
       });
     } else {
       setProgress((prev) => ({
