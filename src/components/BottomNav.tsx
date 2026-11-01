@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, CalendarDays, Timer, BookOpen, Wallet, Bot, LucideIcon } from 'lucide-react';
+import { Home, CalendarDays, Timer, BookOpen, Wallet, Users, Bot, LucideIcon } from 'lucide-react';
 import { useTheme } from '../context/ThemeProvider';
 
 export type TabId = 'home' | 'timetable' | 'companion' | 'focus' | 'learn' | 'budget' | 'friends' | 'profile';
@@ -11,11 +11,13 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { id: 'home', label: 'Home', icon: Home },
-  { id: 'timetable', label: 'Schedule', icon: CalendarDays },
+  { id: 'home', label: 'Tasks', icon: Home },
+  { id: 'timetable', label: 'Timetable', icon: CalendarDays },
   { id: 'companion', label: 'Assistant', icon: Bot },
-  { id: 'focus', label: 'Focus', icon: Timer },
   { id: 'budget', label: 'Budget', icon: Wallet },
+  { id: 'friends', label: 'Circle', icon: Users },
+  { id: 'learn', label: 'Hub', icon: BookOpen },
+  { id: 'focus', label: 'Focus', icon: Timer },
 ];
 
 interface BottomNavProps {
@@ -34,7 +36,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab }) 
         borderColor: character.theme.border,
       }}
     >
-      <div className="flex items-stretch justify-around px-2 py-1.5 max-w-[430px] mx-auto">
+      <div className="flex items-stretch justify-around px-1 py-1 max-w-[440px] mx-auto">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -43,7 +45,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab }) 
             <button
               key={item.id}
               onClick={() => onChangeTab(item.id)}
-              className="relative flex flex-1 flex-col items-center gap-1 rounded-xl py-1.5 transition active:scale-95 group"
+              className="relative flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1 transition active:scale-95 group min-w-0"
             >
               <div
                 className={`p-1 rounded-xl transition ${
@@ -58,11 +60,11 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab }) 
                     : undefined
                 }
               >
-                <Icon size={19} strokeWidth={isActive ? 2.5 : 2} />
+                <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
               </div>
 
               <span
-                className={`text-[10px] font-semibold tracking-tight transition ${
+                className={`text-[9.5px] font-semibold tracking-tight transition truncate px-0.5 ${
                   isActive ? 'font-bold' : 'text-slate-400'
                 }`}
                 style={isActive ? { color: character.theme.primary } : undefined}
@@ -72,7 +74,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab }) 
 
               {isActive && (
                 <span
-                  className="absolute bottom-0 h-0.5 w-4 rounded-full"
+                  className="absolute bottom-0 h-0.5 w-3.5 rounded-full"
                   style={{ backgroundColor: character.theme.primary }}
                 />
               )}
