@@ -45,7 +45,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab }) 
             <button
               key={item.id}
               onClick={() => onChangeTab(item.id)}
-              className="relative flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1 transition active:scale-95 group min-w-0"
+              className="relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-xl py-1 min-h-[44px] transition active:scale-95 group min-w-0"
             >
               <div
                 className={`p-1 rounded-xl transition ${

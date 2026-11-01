@@ -7,6 +7,8 @@ import {
   Bot,
   Trophy,
   User,
+  Monitor,
+  Smartphone,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useTheme } from '../context/ThemeProvider';
@@ -14,11 +16,17 @@ import { getXpRequiredForLevel, getRankDetails } from '../lib/rankEngine';
 import { CharacterAvatar } from './CharacterAvatar';
 import { TabId } from './BottomNav';
 
-interface HeaderProps {
+export interface HeaderProps {
   onNavigateTab?: (tab: TabId) => void;
+  viewMode?: 'phone' | 'desktop';
+  onToggleViewMode?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
+export const Header: React.FC<HeaderProps> = ({
+  onNavigateTab,
+  viewMode,
+  onToggleViewMode,
+}) => {
   const {
     progress,
     soundEnabled,
@@ -93,6 +101,27 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
 
         {/* Stats & Quick Actions */}
         <div className="flex items-center gap-1.5">
+          {/* Desktop/Phone View Mode Switcher */}
+          {onToggleViewMode && (
+            <button
+              onClick={onToggleViewMode}
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl border border-edge bg-surface2 hover:bg-sand/30 text-xs font-bold text-coffee transition"
+              title={viewMode === 'phone' ? 'Switch to Desktop Layout' : 'Switch to Phone Layout'}
+            >
+              {viewMode === 'phone' ? (
+                <>
+                  <Monitor size={13} style={{ color: character.theme.primary }} />
+                  <span className="hidden lg:inline text-[11px]">Desktop</span>
+                </>
+              ) : (
+                <>
+                  <Smartphone size={13} style={{ color: character.theme.primary }} />
+                  <span className="hidden lg:inline text-[11px]">Phone</span>
+                </>
+              )}
+            </button>
+          )}
+
           {/* Streak */}
           <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl border border-edge2 bg-sand/40 text-saddle text-xs font-extrabold">
             <Flame size={13} className="text-saddle animate-bounce" />

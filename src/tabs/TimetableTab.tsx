@@ -240,7 +240,7 @@ export const TimetableTab: React.FC = () => {
         </>
       ) : (
         /* Week Grid View */
-        <div className="space-y-2">
+        <div className="space-y-2 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-7 md:gap-2.5 overflow-x-auto">
           {DAYS_OF_WEEK.map((d) => {
             const items = timetable.filter((e) => e.day === d);
             const isToday = d === today;

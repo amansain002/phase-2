@@ -1488,7 +1488,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       {/* -------------------------------------------------------------------- */}
       {/* FOOTER: Back Button & Big Touch-Friendly Continue Button             */}
       {/* -------------------------------------------------------------------- */}
-      <div className="w-full pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
+      <div className="w-full pt-4 pb-safe border-t border-slate-800/80 flex items-center justify-between gap-3 sticky bottom-0 bg-slate-950/95 backdrop-blur-md z-30">
         {stepIndex > 0 ? (
           <button
             type="button"

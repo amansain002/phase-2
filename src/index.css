@@ -20,13 +20,19 @@
 }
 
 @layer base {
-  body {
+  html, body {
     background-color: var(--color-bg);
     color: var(--color-text);
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
     transition: background-color 0.5s ease, color 0.5s ease;
+  }
+
+  /* Accessible focus outlines for keyboard navigation */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 }
 
@@ -68,4 +74,36 @@
 
 .theme-text-glow {
   text-shadow: 0 0 15px var(--color-primary);
+}
+
+/* Touch Targets & Safe Area */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom, 12px), 12px);
+}
+
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top, 0px), 0px);
+}
+
+/* Landscape Phone Guard: keeps phone layout centered rather than stretching */
+@media (orientation: landscape) and (max-height: 560px) {
+  .critique-phone-container {
+    max-width: 430px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* Fluid responsive typography */
+.fluid-title {
+  font-size: clamp(1.15rem, 3.5vw, 1.6rem);
+}
+
+.fluid-body {
+  font-size: clamp(0.75rem, 1.8vw, 0.875rem);
 }
