@@ -17,6 +17,15 @@ import { BudgetTab } from './tabs/BudgetTab';
 import { TimetableTab } from './tabs/TimetableTab';
 import { WorkoutTab } from './tabs/WorkoutTab';
 import { FriendsTab } from './tabs/FriendsTab';
+import { HomeBudgetCard } from './components/HomeBudgetCard';
+import { AddExpenseModal } from './components/AddExpenseModal';
+import {
+  loadStoredBudgetPlan,
+  loadStoredDetailedExpenses,
+  saveStoredDetailedExpenses,
+  computeBudgetMetrics,
+} from './lib/budgetService';
+import { DetailedExpense, BudgetPlan } from './types/budget';
 import { Onboarding } from './components/Onboarding';
 import { ChatWindow } from './components/ChatWindow';
 import { CharacterSwitcher } from './components/CharacterSwitcher';
@@ -37,6 +46,7 @@ import {
   Shield,
   Layers,
   Zap,
+  Plus,
 } from 'lucide-react';
 import { getTodayDayOfWeek } from './lib/storage';
 import { getRankDetails, getXpRequiredForLevel } from './lib/rankEngine';
@@ -44,6 +54,9 @@ import { getRankDetails, getXpRequiredForLevel } from './lib/rankEngine';
 const MainContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabId>('home');
   const [selectedLearnTopic, setSelectedLearnTopic] = useState<string>('Operating Systems');
+  const [budgetPlan, setBudgetPlan] = useState<BudgetPlan>(loadStoredBudgetPlan);
+  const [detailedExpenses, setDetailedExpenses] = useState<DetailedExpense[]>(loadStoredDetailedExpenses);
+  const [isHomeAddExpenseOpen, setIsHomeAddExpenseOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(getIsLoggedIn);
   const [isOnboardingDone, setIsOnboardingDone] = useState(() => {
     try {
@@ -81,6 +94,7 @@ const MainContent: React.FC = () => {
     tasks,
     progress,
     sessions,
+    addXp,
   } = useApp();
 
   const { character, setIsSwitcherOpen } = useTheme();
@@ -166,6 +180,23 @@ const MainContent: React.FC = () => {
     );
   }
 
+  const handleHomeAddExpense = (expenseData: Omit<DetailedExpense, 'id' | 'createdAt'>) => {
+    const newExp: DetailedExpense = {
+      ...expenseData,
+      id: `exp-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    };
+    const updated = [newExp, ...detailedExpenses];
+    setDetailedExpenses(updated);
+    saveStoredDetailedExpenses(updated);
+
+    const m = computeBudgetMetrics(budgetPlan, updated);
+    addXp(
+      5,
+      `${expenseData.category} -${budgetPlan.currency}${expenseData.amount}. ${budgetPlan.currency}${m.remainingSpendable.toLocaleString()} left this month. Today's limit: ${budgetPlan.currency}${m.dailySpendingLimit} left.`
+    );
+  };
+
   // Render the Tab's Content
   const renderTabContent = () => (
     <>
@@ -232,6 +263,14 @@ const MainContent: React.FC = () => {
               setSelectedLearnTopic(topic);
               setActiveTab('learn');
             }}
+          />
+
+          {/* Real-Time Budget Card on Home */}
+          <HomeBudgetCard
+            plan={budgetPlan}
+            expenses={detailedExpenses}
+            onOpenBudgetTab={() => setActiveTab('budget')}
+            onOpenAddExpense={() => setIsHomeAddExpenseOpen(true)}
           />
         </div>
       )}
@@ -544,6 +583,30 @@ const MainContent: React.FC = () => {
 
       {/* Slide-in Anime Character Switcher Panel */}
       <CharacterSwitcher />
+
+      {/* Floating "+ Add Expense" FAB on Home */}
+      {activeTab === 'home' && (
+        <button
+          onClick={() => setIsHomeAddExpenseOpen(true)}
+          className="fixed bottom-20 right-4 z-40 p-3.5 rounded-full text-white shadow-xl transition active:scale-95 hover:scale-105 flex items-center gap-1.5"
+          style={{
+            backgroundColor: character.theme.primary,
+            boxShadow: `0 4px 20px ${character.theme.primary}50`,
+          }}
+        >
+          <Plus size={20} strokeWidth={2.5} />
+          <span className="text-xs font-extrabold pr-1">+ Expense</span>
+        </button>
+      )}
+
+      {/* Home Add Expense Modal */}
+      <AddExpenseModal
+        isOpen={isHomeAddExpenseOpen}
+        onClose={() => setIsHomeAddExpenseOpen(false)}
+        onAddExpense={handleHomeAddExpense}
+        budgetPlan={budgetPlan}
+        currentExpenses={detailedExpenses}
+      />
 
       {/* Floating Notifications & Celebrations */}
       <NotificationContainer />
