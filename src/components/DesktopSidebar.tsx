@@ -42,7 +42,7 @@ const SIDEBAR_ITEMS: NavItem[] = [
   { id: 'practice', label: 'Practice Hub', icon: Zap, shortcut: '3' },
   { id: 'timetable', label: 'Timetable Plan', icon: CalendarDays, shortcut: '4' },
   { id: 'workout', label: 'Gym Workout', icon: Dumbbell, shortcut: '5' },
-  { id: 'companion', label: 'AI Anime Coach', icon: Bot, shortcut: '6' },
+  { id: 'companion', label: 'AI Coach', icon: Bot, shortcut: '6' },
   { id: 'focus', label: 'Zen Chamber', icon: Timer, shortcut: '7' },
   { id: 'budget', label: 'Pocket Budget', icon: Wallet, shortcut: '8' },
   { id: 'friends', label: 'Study Circle', icon: Users, shortcut: '9' },

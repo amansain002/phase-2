@@ -37,7 +37,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'practice', label: 'Practice', icon: Zap },
   { id: 'timetable', label: 'Timetable', icon: CalendarDays },
   { id: 'workout', label: 'Workout', icon: Dumbbell },
-  { id: 'companion', label: 'Assistant', icon: Bot },
+  { id: 'companion', label: 'AI Coach', icon: Bot },
   { id: 'budget', label: 'Budget', icon: Wallet },
   { id: 'friends', label: 'Circle', icon: Users },
   { id: 'profile', label: 'Profile', icon: User },

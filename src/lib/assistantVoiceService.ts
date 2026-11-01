@@ -550,7 +550,7 @@ class AssistantVoiceService {
   }
 
   /**
-   * Play the uploaded custom anime coach voice audio directly
+   * Play the uploaded custom AI coach voice audio directly
    */
   public playCoachAudio(characterId?: string): boolean {
     const char = characterId || this.currentCharacterId || 'goku';

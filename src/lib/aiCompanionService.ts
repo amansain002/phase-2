@@ -103,8 +103,8 @@ export async function fetchAICompanionResponse(
           context.recentActivity?.taskJustCompleted ||
           'your study session';
         const personality = context.companion?.personality || 'hype';
-        const companionName = context.companion?.name || 'Anime Coach';
-        const prompt = `You are ${companionName}, an anime study coach with a ${personality} personality.
+        const companionName = context.companion?.name || 'AI Coach';
+        const prompt = `You are ${companionName}, an AI study coach with a ${personality} personality.
 The student just triggered: "${context.trigger}".
 Recent activity: ${subject}.
 Write a short, powerful 1-2 sentence reaction in-character that inspires them to keep going!`;
