@@ -77,10 +77,12 @@ export async function testGeminiApiKey(key: string): Promise<{ success: boolean;
   }
   try {
     const testClient = new GoogleGenAI({ apiKey: trimmed });
-    const res = await testClient.models.generateContent({
-      model: 'gemini-3.5-flash',
-      contents: 'Respond with: SUCCESS',
-    });
+    let res;
+    try {
+      res = await testClient.models.generateContent({ model: 'gemini-3.5-flash', contents: 'Respond with: SUCCESS' });
+    } catch {
+      res = await testClient.models.generateContent({ model: 'gemini-3.5-flash-lite', contents: 'Respond with: SUCCESS' });
+    }
     if (res && res.text) {
       return { success: true, message: 'Gemini API key verified! Live AI responses are active.' };
     }
@@ -326,4 +328,5 @@ export async function generateAssistantReply(
   await new Promise((res) => setTimeout(res, 500 + Math.random() * 300));
   return generateCharacterFallback(prompt, character);
 }
+
 

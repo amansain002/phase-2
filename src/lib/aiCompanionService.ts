@@ -109,10 +109,12 @@ The student just triggered: "${context.trigger}".
 Recent activity: ${subject}.
 Write a short, powerful 1-2 sentence reaction in-character that inspires them to keep going!`;
 
-        const res = await client.models.generateContent({
-          model: 'gemini-3.5-flash',
-          contents: prompt,
-        });
+        let res;
+        try {
+          res = await client.models.generateContent({ model: 'gemini-3.5-flash', contents: prompt });
+        } catch {
+          res = await client.models.generateContent({ model: 'gemini-3.5-flash-lite', contents: prompt });
+        }
 
         if (res && res.text) {
           return {
@@ -175,3 +177,4 @@ export async function checkGeminiStatus(): Promise<{
   } catch {}
   return { configured: true, model: 'gemini-3.5-flash-lite' };
 }
+
