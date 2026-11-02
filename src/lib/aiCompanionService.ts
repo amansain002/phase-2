@@ -110,7 +110,7 @@ Recent activity: ${subject}.
 Write a short, powerful 1-2 sentence reaction in-character that inspires them to keep going!`;
 
         const res = await client.models.generateContent({
-          model: 'gemini-2.0-flash',
+          model: 'gemini-3.5-flash',
           contents: prompt,
         });
 

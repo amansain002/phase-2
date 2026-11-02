@@ -2,9 +2,9 @@ import { GoogleGenAI } from '@google/genai';
 import { buildSystemInstruction, buildContextPrompt } from './prompts.js';
 
 // Primary Integrated Gemini API Key
-export const INTEGRATED_GEMINI_API_KEY = 'AQ.Ab8RN6I2cxtj76dLz7raA91sFfpC6creA6X5SyZonDyEjG0dLQ';
+export const INTEGRATED_GEMINI_API_KEY = '';
 
-const CANDIDATE_MODELS = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash', 'gemini-1.5-pro'];
+const CANDIDATE_MODELS = ['gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.8-flash'];
 
 let client = null;
 

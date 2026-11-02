@@ -7,7 +7,7 @@ interface Message {
 }
 
 // Fallback Key
-export const INTEGRATED_GEMINI_API_KEY = 'AQ.Ab8RN6I2cxtj76dLz7raA91sFfpC6creA6X5SyZonDyEjG0dLQ';
+export const INTEGRATED_GEMINI_API_KEY = '';
 
 const importMeta = import.meta as unknown as { env?: Record<string, string> };
 
@@ -78,7 +78,7 @@ export async function testGeminiApiKey(key: string): Promise<{ success: boolean;
   try {
     const testClient = new GoogleGenAI({ apiKey: trimmed });
     const res = await testClient.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-3.5-flash',
       contents: 'Respond with: SUCCESS',
     });
     if (res && res.text) {
@@ -298,10 +298,9 @@ export async function generateAssistantReply(
 
       // Official Google Gemini models in priority order
       const modelsToTry = [
-        'gemini-2.0-flash',
-        'gemini-1.5-flash',
-        'gemini-2.5-flash',
-        'gemini-1.5-pro'
+        'gemini-3.5-flash',
+        'gemini-3.5-flash-lite',
+        'gemini-3.8-flash'
       ];
 
       for (const model of modelsToTry) {
@@ -327,3 +326,4 @@ export async function generateAssistantReply(
   await new Promise((res) => setTimeout(res, 500 + Math.random() * 300));
   return generateCharacterFallback(prompt, character);
 }
+
