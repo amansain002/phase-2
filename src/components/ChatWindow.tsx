@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../context/ThemeProvider';
 import { CharacterAvatar } from './CharacterAvatar';
-import { generateAssistantReply } from '../lib/gemini';
+import { generateAssistantReply, getStoredApiKey } from '../lib/gemini';
+import { ApiKeyModal } from './ApiKeyModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Send,
@@ -16,6 +17,7 @@ import {
   RefreshCw,
   Zap,
   X,
+  Key,
 } from 'lucide-react';
 
 export interface ChatMessage {
@@ -43,6 +45,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ onClose }) => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [hasCustomApiKey, setHasCustomApiKey] = useState(() => Boolean(getStoredApiKey()));
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -254,6 +258,21 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ onClose }) => {
 
         {/* Action Controls */}
         <div className="flex items-center gap-2">
+          {/* Configure Gemini API Key */}
+          <button
+            onClick={() => setIsApiKeyModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition text-xs font-bold shadow-sm active:scale-95"
+            style={{
+              borderColor: hasCustomApiKey ? '#10B98160' : '#F59E0B60',
+              backgroundColor: hasCustomApiKey ? '#10B98115' : '#F59E0B15',
+              color: hasCustomApiKey ? '#34D399' : '#FBBF24',
+            }}
+            title={hasCustomApiKey ? 'Gemini API Key Connected' : 'Connect Gemini API Key for Live AI'}
+          >
+            <Key className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{hasCustomApiKey ? 'Live AI Key' : 'Add API Key'}</span>
+          </button>
+
           {/* Sound FX Toggle */}
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
@@ -499,6 +518,13 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ onClose }) => {
           </button>
         </div>
       </footer>
+
+      {/* Gemini API Key Configuration Modal */}
+      <ApiKeyModal
+        isOpen={isApiKeyModalOpen}
+        onClose={() => setIsApiKeyModalOpen(false)}
+        onKeyUpdated={() => setHasCustomApiKey(Boolean(getStoredApiKey()))}
+      />
     </div>
   );
 };
